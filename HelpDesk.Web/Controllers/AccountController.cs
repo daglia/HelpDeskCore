@@ -53,8 +53,23 @@ namespace HelpDesk.Web.Controllers
                 return RedirectToAction("Index", "Home");
             }
 
-            UserProfileViewModel data = AutoMapper.Mapper.Map<ApplicationUser, UserProfileViewModel>(user);
-            return View(data);
+            var data = new ProfilePasswordViewModel()
+            {
+                UserProfileViewModel = new UserProfileViewModel()
+                {
+                    Email = user.Email,
+                    Id = user.Id,
+                    Name = user.Name,
+                    PhoneNumber = user.PhoneNumber,
+                    Surname = user.Surname,
+                    UserName = user.UserName,
+                    TechnicianStatus = user.TechnicianStatus,
+                    AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/img/avatars/avatar3.jpg" : user.AvatarPath,
+                    Latitude = user.Latitude,
+                    Longitude = user.Longitude
+                }
+            };
+            return View("UserProfile", data);
         }
 
         [HttpGet]
@@ -84,7 +99,7 @@ namespace HelpDesk.Web.Controllers
 
                 ApplicationUser newUser = new ApplicationUser()
                 {
-                    AvatarPath = "/assets/images/icon-noprofile.png",
+                    AvatarPath = null,
                     EmailConfirmed = false,
                     Name = model.Name,
                     Surname = model.Surname,

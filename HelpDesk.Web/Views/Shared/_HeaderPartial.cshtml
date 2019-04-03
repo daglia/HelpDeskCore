@@ -6,7 +6,7 @@
 
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
-@inject MembershipTools _MembershipTools
+@inject MembershipTools MembershipTools
 
 <div class="navbar-content clearfix">
     <ul class="nav navbar-top-links pull-left">
@@ -19,13 +19,13 @@
     <ul class="nav navbar-top-links pull-right">
         @if (User.IsInRole("Technician"))
         {
-            if (_MembershipTools.GetTechnicianStatus(null).Result == TechnicianStatuses.Busy)
+            if (MembershipTools.GetTechnicianStatus(null).Result == TechnicianStatuses.Busy)
             {
                 <li class="tgl-menu-btn">
                     <a href="#" class="btn-link text-dark box-block"> <i class="fa fa-minus-circle fa-lg"></i> Meşgul</a>
                 </li>
             }
-            else if (_MembershipTools.GetTechnicianStatus(null).Result == TechnicianStatuses.Available)
+            else if (MembershipTools.GetTechnicianStatus(null).Result == TechnicianStatuses.Available)
             {
                 <li class="tgl-menu-btn">
                     <a href="#" class="btn-link text-dark box-block"> <i class="fa fa-check-circle fa-lg"></i> Uygun</a>
@@ -44,8 +44,8 @@
             @if (User.Identity.IsAuthenticated)
             {
                 <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
-                    <span class="pull-right"> <img class="img-circle img-user media-object" src="@_MembershipTools.GetAvatarPath(null).Result" alt="Profil Resmi"> </span>
-                    <div class="username hidden-xs">@_MembershipTools.GetNameSurname(null).Result</div>
+                    <span class="pull-right"> <img class="img-circle img-user media-object" src="@MembershipTools.GetAvatarPath(null).Result" alt="Profil Resmi"> </span>
+                    <div class="username hidden-xs">@MembershipTools.GetNameSurname(null).Result</div>
                 </a>
             }
 
