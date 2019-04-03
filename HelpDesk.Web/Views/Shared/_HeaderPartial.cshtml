@@ -1,0 +1,79 @@
+﻿@using HelpDesk.BLL.Account
+@using HelpDesk.Models.IdentityEntities
+@using Microsoft.AspNetCore.Identity
+@using HelpDesk.Models.Enums
+@using Microsoft.AspNetCore.Http
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject MembershipTools _MembershipTools
+
+<div class="navbar-content clearfix">
+    <ul class="nav navbar-top-links pull-left">
+        <!--Navigation toogle button-->
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <li class="tgl-menu-btn">
+            <a class="mainnav-toggle" href="#"> <i class="fa fa-navicon fa-lg"></i> </a>
+        </li>
+    </ul>
+    <ul class="nav navbar-top-links pull-right">
+        @if (User.IsInRole("Technician"))
+        {
+            if (_MembershipTools.GetTechnicianStatus(null).Result == TechnicianStatuses.Busy)
+            {
+                <li class="tgl-menu-btn">
+                    <a href="#" class="btn-link text-dark box-block"> <i class="fa fa-minus-circle fa-lg"></i> Meşgul</a>
+                </li>
+            }
+            else if (_MembershipTools.GetTechnicianStatus(null).Result == TechnicianStatuses.Available)
+            {
+                <li class="tgl-menu-btn">
+                    <a href="#" class="btn-link text-dark box-block"> <i class="fa fa-check-circle fa-lg"></i> Uygun</a>
+                </li>
+            }
+            else
+            {
+                <li class="tgl-menu-btn">
+                    <a href="#" class="btn-link text-dark box-block"> <i class="fa fa-clock-o fa-lg"></i> İş Başında</a>
+                </li>
+            }
+        }
+        <!--User dropdown-->
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <li id="dropdown-user" class="dropdown">
+            @if (User.Identity.IsAuthenticated)
+            {
+                <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                    <span class="pull-right"> <img class="img-circle img-user media-object" src="@_MembershipTools.GetAvatarPath(null).Result" alt="Profil Resmi"> </span>
+                    <div class="username hidden-xs">@_MembershipTools.GetNameSurname(null).Result</div>
+                </a>
+            }
+
+            <div class="dropdown-menu dropdown-menu-right with-arrow">
+                <!-- User dropdown menu -->
+                <ul class="head-list">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        if (User.IsInRole("Client"))
+                        {
+                            <li><a href="@Url.Action("Add", "Failure")"> <i class="fa fa-plus"></i> <span class="menu-title">Arıza Ekle</span></a></li>
+                        }
+                        <li>
+                            <a href="@Url.Action("UserProfile", "Account")"> <i class="fa fa-user fa-fw"></i>Profil</a>
+                        </li>
+                        <li>
+                            <a href="@Url.Action("Logout", "Account")"> <i class="fa fa-sign-out fa-fw"></i>Çıkış Yap</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("Index", "Account")"> <i class="fa fa-paper-plane"></i> <span class="menu-title">Giriş Yap</span></a></li>
+                        <li><a href="@Url.Action("Register", "Account")"> <i class="fa fa-paper-user"></i> <span class="menu-title">Kaydol</span></a></li>
+                    }
+                </ul>
+            </div>
+        </li>
+        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+        <!--End user dropdown-->
+    </ul>
+</div>

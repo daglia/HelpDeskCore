@@ -1,0 +1,121 @@
+﻿@model HelpDesk.Models.ViewModels.LoginViewModel
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giriş Yap | Help Desk - Arızanızı Çözmek Bizim İçin Zevk</title>
+    <link rel="shortcut icon" href="~/assets/img/favicon.ico">
+    <!--STYLESHEET-->
+    <!--=================================================-->
+    <!--Roboto Slab Font [ OPTIONAL ] -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto+Slab:400,300,100,700" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:500,400italic,100,700italic,300,700,500italic,400" rel="stylesheet">
+    <!--Bootstrap Stylesheet [ REQUIRED ]-->
+    <link href="~/assets/css/bootstrap.min.css" rel="stylesheet">
+    <!--Jasmine Stylesheet [ REQUIRED ]-->
+    <link href="~/assets/css/style.css" rel="stylesheet">
+    <!--Font Awesome [ OPTIONAL ]-->
+    <link href="~/assets/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+    <!--Switchery [ OPTIONAL ]-->
+    <link href="~/assets/plugins/switchery/switchery.min.css" rel="stylesheet">
+    <!--Bootstrap Select [ OPTIONAL ]-->
+    <link href="~/assets/plugins/bootstrap-select/bootstrap-select.min.css" rel="stylesheet">
+    <!--Demo [ DEMONSTRATION ]-->
+    <link href="~/assets/css/demo/jasmine.css" rel="stylesheet">
+    <!--SCRIPT-->
+    <!--=================================================-->
+    <!--Page Load Progress Bar [ OPTIONAL ]-->
+    <link href="~/assets/plugins/pace/pace.min.css" rel="stylesheet">
+    <script src="~/assets/plugins/pace/pace.min.js"></script>
+</head>
+<!--TIPS-->
+<!--You may remove all ID or Class names which contain "demo-", they are only used for demonstration. -->
+
+<body>
+    <div id="container">
+        <!-- LOGIN FORM -->
+        <!--===================================================-->
+        <h4>@TempData["Message"]</h4>
+        <div class="lock-wrapper">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="lock-box">
+                        <div class="main">
+                            <h3>Lütfen giriş yapın ya da <strong class="btn-default">@Html.ActionLink("Kaydolun", "Register")</strong></h3>
+                            <form asp-action="Login">
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label asp-for="UserName" class="control-label"></label>
+                                    <input asp-for="UserName" class="form-control" />
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label asp-for="Password" class="control-label"></label>
+                                    <input asp-for="Password" class="form-control" />
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+                                <div class="form-group col-md-12 col-sm-12 col-xs-12">
+                                    <label class="form-checkbox form-icon form-text">
+                                        <input asp-for="RememberMe" /> @Html.DisplayNameFor(model => model.RememberMe)
+                                    </label>
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-6">
+                                    <input type="submit" value="Giriş Yap" class="btn btn-app btn" />
+
+                                </div>
+                                <div class="form-group col-md-6 col-sm-6 col-xs-6">
+                                    <a href="@Url.Action("RecoverPassword", "Account")" class="btn btn-app btn">
+                                        Şifremi Unuttum
+                                    </a>
+                                </div>
+                                
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <!--===================================================-->
+        <!-- END OF CONTAINER -->
+        <!--JAVASCRIPT-->
+        <!--=================================================-->
+        <!--jQuery [ REQUIRED ]-->
+        <script src="~/assets/js/jquery-2.1.1.min.js"></script>
+        <!--BootstrapJS [ RECOMMENDED ]-->
+        <script src="~/assets/js/bootstrap.min.js"></script>
+        <!--Fast Click [ OPTIONAL ]-->
+        <script src="~/assets/plugins/fast-click/fastclick.min.js"></script>
+        <!--Jquery Nano Scroller js [ REQUIRED ]-->
+        <script src="~/assets/plugins/nanoscrollerjs/jquery.nanoscroller.min.js"></script>
+        <!--Metismenu js [ REQUIRED ]-->
+        <script src="~/assets/plugins/metismenu/metismenu.min.js"></script>
+        <!--Jasmine Admin [ RECOMMENDED ]-->
+        <script src="~/assets/js/scripts.js"></script>
+        <!--Switchery [ OPTIONAL ]-->
+        <script src="~/assets/plugins/switchery/switchery.min.js"></script>
+        <!--Jquery Steps [ OPTIONAL ]-->
+        <script src="~/assets/plugins/parsley/parsley.min.js"></script>
+        <!--Jquery Steps [ OPTIONAL ]-->
+        <script src="~/assets/plugins/jquery-steps/jquery-steps.min.js"></script>
+        <!--Bootstrap Select [ OPTIONAL ]-->
+        <script src="~/assets/plugins/bootstrap-select/bootstrap-select.min.js"></script>
+        <!--Bootstrap Wizard [ OPTIONAL ]-->
+        <script src="~/assets/plugins/bootstrap-wizard/jquery.bootstrap.wizard.min.js"></script>
+        <!--Masked Input [ OPTIONAL ]-->
+        <script src="~/assets/plugins/masked-input/bootstrap-inputmask.min.js"></script>
+        <!--Bootstrap Validator [ OPTIONAL ]-->
+        <script src="~/assets/plugins/bootstrap-validator/bootstrapValidator.min.js"></script>
+        <!--Fullscreen jQuery [ OPTIONAL ]-->
+        <script src="~/assets/plugins/screenfull/screenfull.js"></script>
+    </div>
+</body>
+
+</html>

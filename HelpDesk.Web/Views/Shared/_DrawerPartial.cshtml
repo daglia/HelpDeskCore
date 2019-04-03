@@ -1,0 +1,59 @@
+﻿<!--Brand logo & name-->
+<!--================================-->
+<div class="navbar-header">
+    <a href="index.html" class="navbar-brand">
+        <i class="fa fa-forumbee brand-icon"></i>
+        <div class="brand-title">
+            <span class="brand-text">TekSer</span>
+        </div>
+    </a>
+</div>
+<!--================================-->
+<!--End brand logo & name-->
+<div id="mainnav">
+    <!--Menu-->
+    <!--================================-->
+    <div id="mainnav-menu-wrap">
+        <div class="nano">
+            <div class="nano-content">
+                <ul id="mainnav-menu" class="list-group">
+                    <!--Category name-->
+                    <li class="list-header">Menü</li>
+                    <!--Menu list item-->
+
+                    <li> <a href="@Url.Action("Index","Home")"> <i class="fa fa-home"></i> <span class="menu-title">Ana Sayfa</span> </a> </li>
+
+                    @if (User.IsInRole("Admin"))
+                    {
+                        <li><a href="@Url.Action("UserList","Admin")"> <i class="fa fa-user"></i> <span class="menu-title">Kullanıcı Listesi</span></a></li>
+                        <li><a href="@Url.Action("Index","Failure")"> <i class="fa fa-briefcase"></i> <span class="menu-title">Kullanıcı Arıza Listesi</span></a></li>
+                        <li><a href="@Url.Action("FailureList","Technician")"> <i class="fa fa-briefcase"></i> <span class="menu-title">Teknisyen Arıza Listesi</span></a></li>
+                        <li><a href="@Url.Action("FailureList","Operator")"> <i class="fa fa-clock-o"></i> <span class="menu-title">Operatör Arıza Listesi</span></a></li>
+                        <li><a href="@Url.Action("Reports","Admin")"> <i class="fa fa-bar-chart"></i> <span class="menu-title">Raporlar</span></a></li>
+                        <li><a href="@Url.Action("GetAllFailures","Failure")"> <i class="fa fa-ioxhost"></i> <span class="menu-title">Kapanmış Arızalar</span></a></li>
+                    }
+                    else if (User.IsInRole("Technician"))
+                    {
+                        <li><a href="@Url.Action("FailureList","Technician")"> <i class="fa fa-briefcase"></i> <span class="menu-title">Arıza Listem</span></a></li>
+                    }
+                    else if (User.IsInRole("Operator"))
+                    {
+                        <li><a href="@Url.Action("FailureList","Operator")"> <i class="fa fa-briefcase"></i> <span class="menu-title">Arıza Listesi</span></a></li>
+                        <li><a href="@Url.Action("OperationList","Operator")"> <i class="fa fa-clock-o"></i> <span class="menu-title">Operatör İşlemlerim</span></a></li>
+                    }
+                    else if (User.IsInRole("Client"))
+                    {
+                        <li><a href="@Url.Action("Index","Failure")"> <i class="fa fa-briefcase"></i> <span class="menu-title">Arıza Listem</span></a></li>
+                    }
+                    else
+                    {
+                        <li><a href="@Url.Action("Login","Account")"> <i class="fa fa-paper-plane"></i> <span class="menu-title">Giriş Yap</span></a></li>
+                        <li><a href="@Url.Action("Register","Account")"> <i class="fa fa-user"></i> <span class="menu-title">Kaydol</span></a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!--================================-->
+    <!--End menu-->
+</div>

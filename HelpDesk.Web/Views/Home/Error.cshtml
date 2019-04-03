@@ -1,0 +1,24 @@
+﻿@{
+    ViewBag.Title = "Hata | HelpDesk";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    var message = TempData["Model"] as HelpDesk.Models.ViewModels.ErrorViewModel;
+}
+
+<div class="cls-content">
+    <div class="error-full-page">
+        <!-- start: 404 -->
+        <div class="col-sm-12 page-error pad-30">
+            <div class="error-number text-primary">@(message?.ErrorCode ?? 404)</div>
+            <div class="error-details col-sm-6 col-sm-offset-3">
+                <h3> Bir hata oldu!</h3>
+                <p>
+                    @(message?.Text ?? "Aradığınız sayfa bulunamadı.")
+                    <br />
+                    <a href="@Url.Action(message?.ActionName??"Index",message?.ControllerName??"Home")" class="btn btn-danger btn-return"> <i class="fa fa-home"></i>Beni buradan çıkar</a>
+                </p>
+            </div>
+        </div>
+        <!-- end: 404 -->
+    </div>
+</div>
+

@@ -1,0 +1,195 @@
+﻿@using HelpDesk.BLL.Account
+@using HelpDesk.Models.IdentityEntities
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject MembershipTools _membershipTools
+
+@{
+    ViewBag.Title = "Ana Sayfa";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@if (User.IsInRole("Admin"))
+{
+    <h1>Hoş geldin reis-i site!</h1>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row" align="center">
+                    <img height="500" width="500" src="~/assets/img/devices-icons-free-vector.jpg" />
+                </div><br />
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="widgetbox widgetbox-default widgetbox-item-icon">
+                            <div class="widgetbox-item-right widgetbox-icon-danger"> <span class="fa fa-clock-o"></span> </div>
+                            <div class="widgetbox-data-left">
+                                <div class="widgetbox-int">@ViewBag.pendingFailureCount</div>
+                                <p>Bekleyen Arıza</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="widgetbox widgetbox-default widgetbox-item-icon">
+                            <div class="widgetbox-item-right widgetbox-icon-warning"> <span class="fa fa-user"></span> </div>
+                            <div class="widgetbox-data-left">
+                                <div class="widgetbox-int">@ViewBag.availableTechnicianCount</div>
+                                <p>Uygun Teknisyen</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="jumbotron">
+                    <h1>
+                        Hoş geldin<br>
+                        <strong>@(await _membershipTools.GetNameSurname(null))</strong>!
+                    </h1>
+                    <p>Emeklilik ne zaman?</p>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole("Technician"))
+{
+    <h1>Teknisyen Sayfası</h1>
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row" align="center">
+                    <img height="500" width="500" src="~/assets/img/devices-icons-free-vector.jpg" />
+                </div><br />
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="widgetbox widgetbox-default widgetbox-item-icon">
+                            <div class="widgetbox-item-right widgetbox-icon-danger"> <span class="fa fa-clock-o"></span> </div>
+                            <div class="widgetbox-data-left">
+                                <div class="widgetbox-int">@ViewBag.pendingFailureCount</div>
+                                <p>Bekleyen Arıza</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="widgetbox widgetbox-default widgetbox-item-icon">
+                            <div class="widgetbox-item-right widgetbox-icon-warning"> <span class="fa fa-user"></span> </div>
+                            <div class="widgetbox-data-left">
+                                <div class="widgetbox-int">@ViewBag.availableTechnicianCount</div>
+                                <p>Uygun Teknisyen</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="jumbotron">
+                    <h1>
+                        Hoş geldin<br>
+                        <strong>@(await _membershipTools.GetNameSurname(null))</strong>!
+                    </h1>
+                    <p>Yeni bir gün ve yeni arızalar! İşe koyulma zamanı!</p>
+                    <h1 class="text-center"><a class="btn btn-primary btn-lg btn-block" href="@Url.Action("FailureList", "Technician")" role="button">Arıza Listesine Git</a></h1>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else if (User.IsInRole("Operator"))
+{
+    <h1>Operatör Sayfası</h1>
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row" align="center">
+                    <img height="500" width="500" src="~/assets/img/devices-icons-free-vector.jpg" />
+                </div><br />
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <div class="widgetbox widgetbox-default widgetbox-item-icon">
+                            <div class="widgetbox-item-right widgetbox-icon-danger"> <span class="fa fa-clock-o"></span> </div>
+                            <div class="widgetbox-data-left">
+                                <div class="widgetbox-int">@ViewBag.pendingFailureCount</div>
+                                <p>Bekleyen Arıza</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="widgetbox widgetbox-default widgetbox-item-icon">
+                            <div class="widgetbox-item-right widgetbox-icon-warning"> <span class="fa fa-user"></span> </div>
+                            <div class="widgetbox-data-left">
+                                <div class="widgetbox-int">@ViewBag.availableTechnicianCount</div>
+                                <p>Uygun Teknisyen</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="jumbotron">
+                    <h1>
+                        Hoş geldin<br>
+                        <strong>@(await _membershipTools.GetNameSurname(null))</strong>!
+                    </h1>
+                    <p>Her geçen saniye dünyada 30 bin kadar elektronik alet bozuluyor. Gayet sallama bir rakam oldu bu. Senin işin de bu arızaları doğru teknisyenlere atamak. Kolay gelsin!</p>
+                    <h1 class="text-center"><a class="btn btn-primary btn-lg btn-block" href="@Url.Action("FailureList", "Operator")" role="button">Arıza Listesine Git</a></h1>
+                </div>
+            </div>
+        </div>
+
+    </div>
+}
+else if (User.IsInRole("Client"))
+{
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row" align="center">
+                    <img height="500" width="500" src="~/assets/img/devices-icons-free-vector.jpg" />
+                </div><br />
+            </div>
+            <div class="col-md-6">
+                <div class="jumbotron">
+                    <h1>
+                        Hoş geldin<br>
+                        <strong>@(await _membershipTools.GetNameSurname(null))</strong>!
+                    </h1>
+                    <p>Cana geleceğine mala gelsin, siz hiç üzülmeyin! Arızanızı alanında uzman ekiplerimize bildirin ve sadece bir gün içinde çözmeye gelelim!</p>
+                    <h1 class="text-center"><a class="btn btn-primary btn-lg btn-block" href="@Url.Action("Add", "Failure")" role="button">Yeni arıza ekleyin</a></h1>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+}
+else
+{
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="row" align="center">
+                    <img height="500" width="500" src="~/assets/img/devices-icons-free-vector.jpg" />
+                </div><br />
+            </div>
+            <div class="col-md-6">
+                <div class="jumbotron">
+                    <h1>
+                        Hoş geldin!
+                    </h1>
+                    <p>Cana geleceğine mala gelsin, siz hiç üzülmeyin! Arızanızı alanında uzman ekiplerimize bildirin ve sadece bir gün içinde çözmeye gelelim! Başlamak için:</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h1 class="text-center"><a class="btn btn-success btn-lg btn-block" href="@Url.Action("Login", "Account")" role="button">Giriş Yapın</a></h1>
+                        </div>
+                        <div class="col-md-6">
+                            <h1 class="text-center"><a class="btn btn-warning btn-lg btn-block" href="@Url.Action("Register", "Account")" role="button">Kaydolun</a></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

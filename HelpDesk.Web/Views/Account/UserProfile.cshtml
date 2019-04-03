@@ -1,0 +1,212 @@
+﻿@model HelpDesk.Models.ViewModels.ProfilePasswordViewModel
+
+@using HelpDesk.BLL.Account
+@using HelpDesk.Models.IdentityEntities
+@using Microsoft.AspNetCore.Identity
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject MembershipTools _membershipTools
+
+@{
+    ViewBag.Title = "Kullanıcı Profili";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@section top{
+    <style type="text/css">
+        #map {
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+}
+<div id="container" class="effect mainnav-sm navbar-fixed mainnav-fixed">
+    <div class="boxed">
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div class="pageheader hidden-xs">
+            <h3><i class="fa fa-home"></i>Kullanıcı Profili</h3>
+        </div>
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content">
+            <div class="row">
+                <div class="col-lg-3 col-md-3 col-sm-4 col-xs-12">
+                    <div class="userWidget-1">
+                        <div class="avatar bg-info">
+                            <img src="@_membershipTools.GetAvatarPath(null).Result" alt="Kullanıcı Avatarı" />
+                            <div class="name osLight">@_membershipTools.GetNameSurname(null).Result</div>
+                        </div>
+                        <div class="title">@Model.UserProfileViewModel.UserName<br /><br /><span class="text-center label @_membershipTools.GetRoleWithColor(Model.UserProfileViewModel.Id).Result">@_membershipTools.GetRole(Model.UserProfileViewModel.Id).Result</span><br /><br /></div>
+                        <div class="clearfix"> </div>
+                    </div>
+                    <div class="panel">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><i class="fa fa-user"> </i> Kullanıcı Bilgileri</h3>
+                        </div>
+                        <div class="panel-body">
+                            <table class="table">
+                                <tbody>
+                                    <tr>
+                                        <td><i class="fa fa-envelope-o ph-5"></i></td>
+                                        <td>E-mail</td>
+                                        <td>@Model.UserProfileViewModel.Email</td>
+                                    </tr>
+                                    <tr>
+                                        <td><i class="fa fa-phone ph-5"></i></td>
+                                        <td>Telefon</td>
+                                        <td>@Model.UserProfileViewModel.PhoneNumber</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-9 col-md-9 col-sm-8 col-xs-12">
+                    <div class="panel">
+                        <div class="panel-body pad-no">
+                            <!--Default Tabs (Left Aligned)-->
+                            <!--===================================================-->
+                            <div class="tab-base">
+                                <!--Nav Tabs-->
+                                <ul class="nav nav-tabs">
+                                    <li class="active"> <a data-toggle="tab" href="#update-info">Bilgileri Güncelle</a> </li>
+                                    <li> <a data-toggle="tab" href="#password-settings">Şifre Ayarları</a> </li>
+                                </ul>
+                                <!--Tabs Content-->
+                                <div class="tab-content">
+                                    <div id="update-info" class="tab-pane fade active in">
+                                        <h3>@TempData["Message"]</h3>
+                                        @Html.ValidationSummary()
+
+                                        @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post, new { @class = "fieldset", enctype = "multipart/form-data" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            @Html.HiddenFor(x => x.UserProfileViewModel.Id)
+                                            @Html.HiddenFor(x => x.UserProfileViewModel.UserName)
+                                            <h4 class="col-md-3 control-label">Profil Bilgileri</h4>
+                                            <div class="form-group row">
+                                                @if (User.IsInRole("Technician"))
+                                                {
+                                                    <div class="col-sm-9 control-label">
+                                                        @{
+                                                            List<SelectListItem> listItems = new List<SelectListItem>();
+                                                            listItems.Add(new SelectListItem
+                                                            {
+                                                                Text = "Uygun",
+                                                                Value = "Available"
+                                                            });
+                                                            listItems.Add(new SelectListItem
+                                                            {
+                                                                Text = "Meşgul",
+                                                                Value = "Busy",
+                                                                Selected = true
+                                                            });
+                                                        }
+                                                        @Html.LabelFor(x => x.UserProfileViewModel.TechnicianStatus)
+                                                        @Html.DropDownListFor(x => x.UserProfileViewModel.TechnicianStatus, listItems, new { @class = "form-control" })<br />
+                                                    </div>
+                                                    <div class="col-sm-9 control-label">
+                                                        <div id="map"></div>
+                                                        <div class="col-sm-5 control-label">
+                                                            @Html.LabelFor(x => x.UserProfileViewModel.Latitude)
+                                                            @Html.TextBoxFor(x => x.UserProfileViewModel.Latitude, new { @class = "form-control", @id = "ltd", @readonly = "readonly" })
+                                                        </div>
+                                                        <div class="col-sm-5 control-label">
+                                                            @Html.LabelFor(x => x.UserProfileViewModel.Longitude)
+                                                            @Html.TextBoxFor(x => x.UserProfileViewModel.Longitude, new { @class = "form-control", @id = "lng", @readonly = "readonly" })
+                                                        </div>
+                                                        <div class="col-sm-2 control-label">
+                                                            <br />
+                                                            <input type="button" class="btn btn-danger" value="Bul" onclick="getLocation()" />
+                                                        </div>
+                                                    </div>
+                                                }
+                                                <div class="col-sm-9 control-label">
+                                                    @Html.LabelFor(x => x.UserProfileViewModel.Name)
+                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.Name, new { @class = "form-control" })
+                                                </div>
+                                                <div class="col-sm-9 control-label">
+                                                    @Html.LabelFor(x => x.UserProfileViewModel.Surname)
+                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.Surname, new { @class = "form-control" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-9 control-label">
+                                                    @Html.LabelFor(x => x.UserProfileViewModel.Email)
+                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.Email, new { @class = "form-control col-sm-9", type = "email" })
+                                                </div>
+                                                <div class="col-sm-9 control-label">
+                                                    @Html.LabelFor(x => x.UserProfileViewModel.PhoneNumber)
+                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.PhoneNumber, new { @class = "form-control col-sm-9" })
+                                                </div>
+
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-9 control-label">
+                                                    @*@Html.LabelFor(x => x.UserProfileViewModel.PostedFile)
+                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.PostedFile, new { @class = "form-control col-sm-9", type = "file", multiple = false })*@
+                                                </div>
+                                            </div>
+                                            <div class="row narrow-gutter">
+                                                <div class="col-xs-6">
+                                                    <button type="submit" class="btn btn-primary">Güncelle</button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <div id="password-settings" class="tab-pane fade">
+                                        @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post, new { @class = "fieldset" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+                                            <h4 class="col-md-3 control-label">Şifre Ayarları</h4>
+                                            <div class="form-group row">
+                                                <div class="col-sm-9">
+                                                    @Html.LabelFor(x => x.ChangePasswordViewModel.OldPassword)
+                                                    @Html.TextBoxFor(x => x.ChangePasswordViewModel.OldPassword, new { @class = "form-control", type = "password" })
+                                                </div>
+                                            </div>
+                                            <div class="form-group row">
+                                                <div class="col-sm-9">
+                                                    @Html.LabelFor(x => x.ChangePasswordViewModel.NewPassword)
+                                                    @Html.TextBoxFor(x => x.ChangePasswordViewModel.NewPassword, new { @class = "form-control", type = "password" })
+                                                </div>
+                                                <div class="col-sm-9">
+                                                    @Html.LabelFor(x => x.ChangePasswordViewModel.ConfirmNewPassword)
+                                                    @Html.TextBoxFor(x => x.ChangePasswordViewModel.ConfirmNewPassword, new { @class = "form-control", type = "password" })
+                                                </div>
+                                            </div>
+                                            <div class="row narrow-gutter">
+                                                <div class="col-xs-6">
+                                                    <button type="submit" class="btn btn-primary">Şifreyi Güncelle</button>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                            <!--===================================================-->
+                            <!--End Default Tabs (Left Aligned)-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--===================================================-->
+        <!--End page content-->
+    </div>
+    <!--===================================================-->
+    <!--END CONTENT CONTAINER-->
+
+</div>
+<!-- SCROLL TOP BUTTON -->
+<!--===================================================-->
+<button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+<!--===================================================-->
+@section bottom{
+    <script type="text/javascript" src="/assets/js/map.js"></script>
+}
