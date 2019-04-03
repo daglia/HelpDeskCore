@@ -81,14 +81,11 @@
                                 <div class="tab-content">
                                     <div id="update-info" class="tab-pane fade active in">
                                         <h3>@TempData["Message"]</h3>
-                                        @Html.ValidationSummary()
-
-                                        @using (Html.BeginForm("UpdateProfile", "Account", FormMethod.Post, new { @class = "fieldset", enctype = "multipart/form-data" }))
-                                        {
-                                            @Html.AntiForgeryToken()
-                                            @Html.HiddenFor(x => x.UserProfileViewModel.Id)
-                                            @Html.HiddenFor(x => x.UserProfileViewModel.UserName)
-                                            <h4 class="col-md-3 control-label">Profil Bilgileri</h4>
+                                        <h4 class="col-md-3 control-label">Profil Bilgileri</h4>
+                                        <form asp-action="UserProfile" class = "fieldset" enctype = "multipart/form-data" >
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input asp-for="UserProfileViewModel.Id" type="hidden" />
+                                            <input asp-for="UserProfileViewModel.UserName" type="hidden" />.
                                             <div class="form-group row">
                                                 @if (User.IsInRole("Technician"))
                                                 {
@@ -107,18 +104,23 @@
                                                                 Selected = true
                                                             });
                                                         }
-                                                        @Html.LabelFor(x => x.UserProfileViewModel.TechnicianStatus)
-                                                        @Html.DropDownListFor(x => x.UserProfileViewModel.TechnicianStatus, listItems, new { @class = "form-control" })<br />
+                                                        <label asp-for="UserProfileViewModel.TechnicianStatus" class="control-label"></label>
+                                                        <select asp-for="UserProfileViewModel.TechnicianStatus" asp-items="listItems" class="form-control"></select>
+                                                        <br />
+
                                                     </div>
+
+
                                                     <div class="col-sm-9 control-label">
                                                         <div id="map"></div>
                                                         <div class="col-sm-5 control-label">
-                                                            @Html.LabelFor(x => x.UserProfileViewModel.Latitude)
-                                                            @Html.TextBoxFor(x => x.UserProfileViewModel.Latitude, new { @class = "form-control", @id = "ltd", @readonly = "readonly" })
+                                                            <label asp-for="UserProfileViewModel.Latitude" class="control-label"></label>
+                                                            <input asp-for="UserProfileViewModel.Latitude" class="form-control" id="ltd" readonly="readonly" />
+
                                                         </div>
                                                         <div class="col-sm-5 control-label">
-                                                            @Html.LabelFor(x => x.UserProfileViewModel.Longitude)
-                                                            @Html.TextBoxFor(x => x.UserProfileViewModel.Longitude, new { @class = "form-control", @id = "lng", @readonly = "readonly" })
+                                                            <label asp-for="UserProfileViewModel.Longitude" class="control-label"></label>
+                                                            <input asp-for="UserProfileViewModel.Longitude" class="form-control" id="lng" readonly="readonly" />
                                                         </div>
                                                         <div class="col-sm-2 control-label">
                                                             <br />
@@ -126,30 +128,34 @@
                                                         </div>
                                                     </div>
                                                 }
+
                                                 <div class="col-sm-9 control-label">
-                                                    @Html.LabelFor(x => x.UserProfileViewModel.Name)
-                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.Name, new { @class = "form-control" })
+                                                    <label asp-for="UserProfileViewModel.Name" class="control-label"></label>
+                                                    <input asp-for="UserProfileViewModel.Name" class="form-control" />
+
                                                 </div>
+
                                                 <div class="col-sm-9 control-label">
-                                                    @Html.LabelFor(x => x.UserProfileViewModel.Surname)
-                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.Surname, new { @class = "form-control" })
+                                                    <label asp-for="UserProfileViewModel.Surname" class="control-label"></label>
+                                                    <input asp-for="UserProfileViewModel.Surname" class="form-control" />
+
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-9 control-label">
-                                                    @Html.LabelFor(x => x.UserProfileViewModel.Email)
-                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.Email, new { @class = "form-control col-sm-9", type = "email" })
+                                                    <label asp-for="UserProfileViewModel.Email" class="control-label"></label>
+                                                    <input asp-for="UserProfileViewModel.Email" class="form-control col-sm-9" type="email" />
                                                 </div>
                                                 <div class="col-sm-9 control-label">
-                                                    @Html.LabelFor(x => x.UserProfileViewModel.PhoneNumber)
-                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.PhoneNumber, new { @class = "form-control col-sm-9" })
+                                                    <label asp-for="UserProfileViewModel.PhoneNumber" class="control-label"></label>
+                                                    <input asp-for="UserProfileViewModel.PhoneNumber" class="form-control col-sm-9" />
                                                 </div>
-
                                             </div>
+
                                             <div class="form-group row">
                                                 <div class="col-sm-9 control-label">
                                                     @*@Html.LabelFor(x => x.UserProfileViewModel.PostedFile)
-                                                    @Html.TextBoxFor(x => x.UserProfileViewModel.PostedFile, new { @class = "form-control col-sm-9", type = "file", multiple = false })*@
+                    @Html.TextBoxFor(x => x.UserProfileViewModel.PostedFile, new { @class = "form-control col-sm-9", type = "file", multiple = false })*@
                                                 </div>
                                             </div>
                                             <div class="row narrow-gutter">
@@ -157,27 +163,29 @@
                                                     <button type="submit" class="btn btn-primary">Güncelle</button>
                                                 </div>
                                             </div>
-                                        }
+                                        </form>
+
                                     </div>
                                     <div id="password-settings" class="tab-pane fade">
-                                        @using (Html.BeginForm("ChangePassword", "Account", FormMethod.Post, new { @class = "fieldset" }))
-                                        {
-                                            @Html.AntiForgeryToken()
+                                        <form asp-action="ChangePassword" class="fieldset">
+                                          
                                             <h4 class="col-md-3 control-label">Şifre Ayarları</h4>
                                             <div class="form-group row">
                                                 <div class="col-sm-9">
-                                                    @Html.LabelFor(x => x.ChangePasswordViewModel.OldPassword)
-                                                    @Html.TextBoxFor(x => x.ChangePasswordViewModel.OldPassword, new { @class = "form-control", type = "password" })
+                                                    <label asp-for="ChangePasswordViewModel.OldPassword" class="control-label"></label>
+                                                    <input asp-for="ChangePasswordViewModel.OldPassword" class = "form-control", type = "password" />
+                                                   
                                                 </div>
                                             </div>
                                             <div class="form-group row">
                                                 <div class="col-sm-9">
-                                                    @Html.LabelFor(x => x.ChangePasswordViewModel.NewPassword)
-                                                    @Html.TextBoxFor(x => x.ChangePasswordViewModel.NewPassword, new { @class = "form-control", type = "password" })
+                                                    <label asp-for="ChangePasswordViewModel.NewPassword" class="control-label"></label>
+                                                    <input asp-for="ChangePasswordViewModel.NewPassword" class="form-control" , type="password" />
+                                                   
                                                 </div>
                                                 <div class="col-sm-9">
-                                                    @Html.LabelFor(x => x.ChangePasswordViewModel.ConfirmNewPassword)
-                                                    @Html.TextBoxFor(x => x.ChangePasswordViewModel.ConfirmNewPassword, new { @class = "form-control", type = "password" })
+                                                    <label asp-for="ChangePasswordViewModel.ConfirmNewPassword" class="control-label"></label>
+                                                    <input asp-for="ChangePasswordViewModel.ConfirmNewPassword" class = "form-control", type = "password" />
                                                 </div>
                                             </div>
                                             <div class="row narrow-gutter">
@@ -185,7 +193,8 @@
                                                     <button type="submit" class="btn btn-primary">Şifreyi Güncelle</button>
                                                 </div>
                                             </div>
-                                        }
+                                        </form>
+                                        
                                     </div>
                                 </div>
                             </div>
