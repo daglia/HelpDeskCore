@@ -39,5 +39,10 @@ namespace HelpDesk.Web.Controllers
 
             return View();
         }
+
+        public IActionResult Error()
+        {
+            return View();
+        }
     }
 }

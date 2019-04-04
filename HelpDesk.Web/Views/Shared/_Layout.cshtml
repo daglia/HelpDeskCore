@@ -45,26 +45,24 @@
         </header>
         <!--===================================================-->
         <!--END NAVBAR-->
-        <div class="boxed">
-            <!--CONTENT CONTAINER-->
-            <!--===================================================-->
-            <div id="content-container">
-                @RenderBody()
-            </div>
-            <!--===================================================-->
-            <!--END CONTENT CONTAINER-->
-            <!--MAIN NAVIGATION-->
-            <!--===================================================-->
-            <nav id="mainnav-container">
-                <partial name="_DrawerPartial" />
-            </nav>
-            <!--===================================================-->
-            <!--END MAIN NAVIGATION-->
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div id="content-container">
+            @RenderBody()
         </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+        <!--MAIN NAVIGATION-->
+        <!--===================================================-->
+        <nav id="mainnav-container">
+            <partial name="_DrawerPartial" />
+        </nav>
+        <!--===================================================-->
+        <!--END MAIN NAVIGATION-->
         <!-- FOOTER -->
         <!--===================================================-->
         <footer id="footer">
-            <p class="pad-lft">&#0169; @DateTime.Now.Year AlaDağ Danışmanlık, Bilişim Hizmetleri A.Ş.</p>
+            <p class="pad-lft">&#0169; @DateTime.Now.Year AGE Danışmanlık, Bilişim Hizmetleri A.Ş.</p>
         </footer>
         <!--===================================================-->
         <!-- END FOOTER -->
@@ -77,8 +75,8 @@
     <!-- END OF CONTAINER -->
     <!--JAVASCRIPT-->
     <!--=================================================-->
-    
-    
+
+
 
     @RenderSection("bottom", false)
 

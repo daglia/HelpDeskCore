@@ -223,16 +223,19 @@ namespace HelpDesk.Web.Controllers
             try
             {
                 ApplicationUser user = await _membershipTools.UserManager.GetUserAsync(HttpContext.User);
-                UserProfileViewModel data = new UserProfileViewModel()
+                ProfilePasswordViewModel data = new ProfilePasswordViewModel()
                 {
-                    Email = user.Email,
-                    Id = user.Id,
-                    Name = user.Name,
-                    PhoneNumber = user.PhoneNumber,
-                    Surname = user.Surname,
-                    UserName = user.UserName,
-                    AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/images/icon-noprofile.png" : user.AvatarPath,
-                    //Location = user.Location
+                    UserProfileViewModel = new UserProfileViewModel()
+                    {
+                        Email = user.Email,
+                        Id = user.Id,
+                        Name = user.Name,
+                        PhoneNumber = user.PhoneNumber,
+                        Surname = user.Surname,
+                        UserName = user.UserName,
+                        AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? null : user.AvatarPath,
+                        //Location = user.Location
+                    }
                 };
 
                 return View(data);
@@ -252,9 +255,9 @@ namespace HelpDesk.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> UserProfile(UserProfileViewModel model)
+        public async Task<ActionResult> UserProfile(ProfilePasswordViewModel model)
         {
-            ApplicationUser user = await _membershipTools.UserManager.FindByIdAsync(model.Id);
+            ApplicationUser user = await _membershipTools.UserManager.FindByIdAsync(model.UserProfileViewModel.Id);
 
             if (!ModelState.IsValid)
             {
@@ -294,15 +297,15 @@ namespace HelpDesk.Web.Controllers
 
             try
             {
-                user.Name = model.Name;
-                user.Surname = model.Surname;
-                user.PhoneNumber = model.PhoneNumber;
+                user.Name = model.UserProfileViewModel.Name;
+                user.Surname = model.UserProfileViewModel.Surname;
+                user.PhoneNumber = model.UserProfileViewModel.PhoneNumber;
                 //user.Location = model.Location;
-                if (user.Email != model.Email)
+                if (user.Email != model.UserProfileViewModel.Email)
                 {
                     //todo tekrar aktivasyon maili gönderilmeli. rolü de aktif olmamış role çevrilmeli.
                 }
-                user.Email = model.Email;
+                user.Email = model.UserProfileViewModel.Email;
 
                 await _membershipTools.UserManager.UpdateAsync(user);
                 TempData["Message"] = "Güncelleme işlemi başarılı.";
@@ -310,14 +313,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                TempData["Model"] = new ErrorViewModel()
                 {
                     Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "UserProfile",
                     ControllerName = "Account",
                     ErrorCode = 500
                 };
-                return RedirectToAction("Error500", "Home");
+                return RedirectToAction("Error", "Home");
             }
         }
 
