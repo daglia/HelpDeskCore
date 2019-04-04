@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using HelpDesk.DAL;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HelpDesk.BLL.Account
 {
@@ -14,13 +16,20 @@ namespace HelpDesk.BLL.Account
         private readonly RoleManager<ApplicationRole> _roleManager;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
+        private readonly MyContext _context;
 
-        public MembershipTools(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor)
+        public MembershipTools(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor, MyContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
+            _context = context;
+        }
+
+        public UserStore<ApplicationUser> UserStore
+        {
+            get { return new UserStore<ApplicationUser>(_context); }
         }
 
         public UserManager<ApplicationUser> UserManager

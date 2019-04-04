@@ -13,6 +13,7 @@ using System;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using EmailService = HelpDesk.BLL.Services.Senders.EmailService;
 
 namespace HelpDesk.Web.Controllers
@@ -160,7 +161,7 @@ namespace HelpDesk.Web.Controllers
                     ControllerName = "Account",
                     ErrorCode = 500
                 };
-                return RedirectToAction("Error500", "Home");
+                return RedirectToAction("Error", "Home");
             }
         }
 
@@ -206,7 +207,7 @@ namespace HelpDesk.Web.Controllers
                     ControllerName = "Account",
                     ErrorCode = 500
                 };
-                return RedirectToAction("Error500", "Home");
+                return RedirectToAction("Error", "Home");
             }
         }
 
@@ -233,7 +234,7 @@ namespace HelpDesk.Web.Controllers
                         PhoneNumber = user.PhoneNumber,
                         Surname = user.Surname,
                         UserName = user.UserName,
-                        AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? null : user.AvatarPath,
+                        AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/img/user.png" : user.AvatarPath,
                         //Location = user.Location
                     }
                 };
@@ -249,7 +250,7 @@ namespace HelpDesk.Web.Controllers
                     ControllerName = "Account",
                     ErrorCode = 500
                 };
-                return RedirectToAction("Error500", "Home");
+                return RedirectToAction("Error", "Home");
             }
         }
 
@@ -324,13 +325,6 @@ namespace HelpDesk.Web.Controllers
             }
         }
 
-        [HttpGet]
-        [Authorize]
-        public ActionResult ChangePassword()
-        {
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
@@ -387,7 +381,7 @@ namespace HelpDesk.Web.Controllers
                     ControllerName = "Account",
                     ErrorCode = 500
                 };
-                return RedirectToAction("Error500", "Home");
+                return RedirectToAction("Error", "Home");
             }
         }
 
@@ -415,16 +409,20 @@ namespace HelpDesk.Web.Controllers
 
                 string newPassword = StringHelpers.GetCode().Substring(0, 6);
 
-                await _membershipTools.UserManager.RemovePasswordAsync(user);
-                await _membershipTools.UserManager.AddPasswordAsync(user,
-                    _membershipTools.UserManager.PasswordHasher.HashPassword(user, newPassword));
+                //await _membershipTools.UserManager.RemovePasswordAsync(user);
+                //await _membershipTools.UserManager.AddPasswordAsync(user,
+                //    _membershipTools.UserManager.PasswordHasher.HashPassword(user, newPassword));
 
-                //var token=await _membershipTools.UserManager.GeneratePasswordResetTokenAsync(user); 
+                //var token = await _membershipTools.UserManager.GeneratePasswordResetTokenAsync(user);
                 //await _membershipTools.UserManager.ResetPasswordAsync(user, token, newPassword);
 
-                _dbContext.SaveChanges();
+                var hashPassword = _membershipTools.UserManager.PasswordHasher.HashPassword(user, newPassword);
 
-                if (_dbContext.SaveChanges() > 0)
+                await _membershipTools.UserStore.SetPasswordHashAsync(user, hashPassword);
+
+                var result = await _membershipTools.UserStore.Context.SaveChangesAsync();
+
+                if (result == 0)
                 {
                     TempData["Message"] = new ErrorViewModel()
                     {
@@ -433,7 +431,7 @@ namespace HelpDesk.Web.Controllers
                         ControllerName = "Account",
                         ErrorCode = 500
                     };
-                    return RedirectToAction("Error500", "Home");
+                    return RedirectToAction("Error", "Home");
                 }
 
                 EmailService emailService = new EmailService();
@@ -450,7 +448,7 @@ namespace HelpDesk.Web.Controllers
                     ControllerName = "Account",
                     ErrorCode = 500
                 };
-                return RedirectToAction("Error500", "Home");
+                return RedirectToAction("Error", "Home");
             }
             TempData["Message"] = $"{model.Email} mail adresine yeni şifre gönderildi.";
             return View();
