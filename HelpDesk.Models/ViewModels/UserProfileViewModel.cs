@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.ComponentModel.DataAnnotations;
 using HelpDesk.Models.Enums;
+using Microsoft.AspNetCore.Http;
 
 namespace HelpDesk.Models.ViewModels
 {
@@ -38,7 +33,7 @@ namespace HelpDesk.Models.ViewModels
         public TechnicianStatuses? TechnicianStatus { get; set; }
 
         public string AvatarPath { get; set; }
-        //[Display(Name = "Kullanıcı Avatarı")]
-        //public HttpPostedFileBase PostedFile { get; set; }
+        [Display(Name = "Kullanıcı Avatarı")]
+        public IFormFile  PostedFile { get; set; }
     }
 }

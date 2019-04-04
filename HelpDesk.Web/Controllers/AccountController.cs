@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -266,35 +267,38 @@ namespace HelpDesk.Web.Controllers
             }
 
 
-            //if (model.PostedFile != null &&
-            //       model.PostedFile.Length > 0)
-            //{
-            //    var file = model.PostedFile;
-            //    string fileName = Path.GetFileNameWithoutExtension(file.FileName);
-            //    string extName = Path.GetExtension(file.FileName);
-            //    fileName = StringHelpers.UrlFormatConverter(fileName);
-            //    fileName += StringHelpers.GetCode();
-            //    var directorypath = Server.MapPath("~/Upload/");
-            //    var filepath = Server.MapPath("~/Upload/") + fileName + extName;
+            if (model.UserProfileViewModel.PostedFile != null &&
+                   model.UserProfileViewModel.PostedFile.Length > 0)
+            {
+                var file = model.UserProfileViewModel.PostedFile;
+                string fileName = Path.GetFileNameWithoutExtension(file.FileName);
+                string extName = Path.GetExtension(file.FileName);
+                fileName = StringHelpers.UrlFormatConverter(fileName);
+                fileName += StringHelpers.GetCode();
 
-            //    if (!Directory.Exists(directorypath))
-            //    {
-            //        Directory.CreateDirectory(directorypath);
-            //    }
 
-            //    file.SaveAs(filepath);
+                var webpath = _hostingEnvironment.WebRootPath;
+                var directorypath = Path.Combine(webpath, "Uploads");
+                var filePath = Path.Combine(directorypath, fileName + extName);
 
-            //    WebImage img = new WebImage(filepath);
-            //    img.Resize(250, 250, false);
-            //    img.AddTextWatermark("TeknikServis");
-            //    img.Save(filepath);
-            //    var oldPath = user.AvatarPath;
-            //    if (oldPath != "/assets/images/icon-noprofile.png")
-            //    {
-            //        System.IO.File.Delete(Server.MapPath(oldPath));
-            //    }
-            //    user.AvatarPath = "/Upload/" + fileName + extName;
-            //}
+
+                if (!Directory.Exists(directorypath))
+                {
+                    Directory.CreateDirectory(directorypath);
+                }
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await file.CopyToAsync(fileStream);
+                }
+
+                //var oldPath = user.AvatarPath;
+                //if (oldPath != "/assets/img/user.png")
+                //{
+                //    System.IO.File.Delete(Path.Combine(oldPath));
+                //}
+                user.AvatarPath = "/Uploads/" + fileName + extName;
+            }
 
             try
             {

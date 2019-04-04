@@ -151,8 +151,9 @@
 
                                     <div class="form-group row">
                                         <div class="col-sm-9 control-label">
-                                            @*@Html.LabelFor(x => x.UserProfileViewModel.PostedFile)
-                                                @Html.TextBoxFor(x => x.UserProfileViewModel.PostedFile, new { @class = "form-control col-sm-9", type = "file", multiple = false })*@
+                                            <label asp-for="UserProfileViewModel.PostedFile" class="control-label"></label>
+                                            <input asp-for="UserProfileViewModel.PostedFile" class="form-control col-sm-9" type = "file" multiple = false />
+                                              
                                         </div>
                                     </div>
                                     <div class="row narrow-gutter">
