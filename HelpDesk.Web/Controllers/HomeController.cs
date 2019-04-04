@@ -30,11 +30,11 @@ namespace HelpDesk.Web.Controllers
             //if (!System.Web.HttpContext.Current.User.Identity.IsAuthenticated)
             //    return RedirectToAction("Logout", "Account");
 
-            if (!User.IsInRole("User") && User.Identity.IsAuthenticated)
+            if (!User.IsInRole("Client") && User.Identity.IsAuthenticated)
             {
-                ViewBag.pendingFailureCount = _failureRepo.GetAll().Where(x => x.OperationStatus == OperationStatuses.Pending).Count();
+                ViewBag.pendingFailureCount = _failureRepo.GetAll().Count(x => x.OperationStatus == OperationStatuses.Pending);
 
-                ViewBag.availableTechnicianCount = userManager.Users.Where(x => x.TechnicianStatus == TechnicianStatuses.Available).Count();
+                ViewBag.availableTechnicianCount = userManager.Users.Count(x => x.TechnicianStatus == TechnicianStatuses.Available);
             }
 
             return View();

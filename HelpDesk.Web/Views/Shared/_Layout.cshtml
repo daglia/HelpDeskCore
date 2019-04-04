@@ -1,5 +1,5 @@
 ﻿<!DOCTYPE html>
-<html>
+<html lang="tr">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -47,16 +47,19 @@
         <!--END NAVBAR-->
         <!--CONTENT CONTAINER-->
         <!--===================================================-->
-        <div id="content-container">
-            @RenderBody()
+        <div class="boxed">
+            <div id="content-container">
+                   @RenderBody()
+            </div>
+        
+            <!--===================================================-->
+            <!--END CONTENT CONTAINER-->
+            <!--MAIN NAVIGATION-->
+            <!--===================================================-->
+            <nav id="mainnav-container">
+                <partial name="_DrawerPartial" />
+            </nav>
         </div>
-        <!--===================================================-->
-        <!--END CONTENT CONTAINER-->
-        <!--MAIN NAVIGATION-->
-        <!--===================================================-->
-        <nav id="mainnav-container">
-            <partial name="_DrawerPartial" />
-        </nav>
         <!--===================================================-->
         <!--END MAIN NAVIGATION-->
         <!-- FOOTER -->
