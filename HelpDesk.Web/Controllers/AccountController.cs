@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Linq;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using EmailService = HelpDesk.BLL.Services.Senders.EmailService;
 
@@ -330,30 +331,30 @@ namespace HelpDesk.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<ActionResult> ChangePassword(ChangePasswordViewModel model)
+        public async Task<ActionResult> ChangePassword(ProfilePasswordViewModel model)
         {
             try
             {
-                ApplicationUser user = await _membershipTools.UserManager.GetUserAsync(HttpContext.User);
+                //ApplicationUser user = await _membershipTools.UserManager.GetUserAsync(HttpContext.User);
 
-                //var id = _membershipTools.IHttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-                //var user = await _membershipTools.UserManager.FindByIdAsync(id);
+                var name = _membershipTools.IHttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
+                var user = await _membershipTools.UserManager.FindByNameAsync(name);
 
                 ChangePasswordViewModel data = new ChangePasswordViewModel()
                 {
-                    OldPassword = model.OldPassword,
-                    NewPassword = model.NewPassword,
-                    ConfirmNewPassword = model.ConfirmNewPassword
+                    OldPassword = model.ChangePasswordViewModel.OldPassword,
+                    NewPassword = model.ChangePasswordViewModel.NewPassword,
+                    ConfirmNewPassword = model.ChangePasswordViewModel.ConfirmNewPassword
                 };
 
-                model = data;
+                model.ChangePasswordViewModel = data;
                 if (!ModelState.IsValid)
                 {
                     return RedirectToAction("Index", "Home");
                 }
 
                 IdentityResult result = await _membershipTools.UserManager.ChangePasswordAsync(await _membershipTools.UserManager.GetUserAsync(HttpContext.User),
-                    model.OldPassword, model.NewPassword);
+                    model.ChangePasswordViewModel.OldPassword, model.ChangePasswordViewModel.NewPassword);
 
                 if (result.Succeeded)
                 {
