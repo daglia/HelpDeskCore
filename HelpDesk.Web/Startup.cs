@@ -14,6 +14,7 @@ using HelpDesk.BLL.Repository;
 using HelpDesk.BLL.Repository.Abstracts;
 using HelpDesk.Models.Entities;
 using HelpDesk.BLL.Account;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace HelpDesk.Web
 {

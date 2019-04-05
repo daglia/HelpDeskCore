@@ -19,20 +19,24 @@ namespace HelpDesk.BLL.Account
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly MyContext _context;
 
-        public MembershipTools(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager,RoleStore<ApplicationRole> roleStore, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor, MyContext context)
+        public MembershipTools(UserManager<ApplicationUser> userManager, RoleManager<ApplicationRole> roleManager, SignInManager<ApplicationUser> signInManager, IHttpContextAccessor httpContextAccessor, MyContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _signInManager = signInManager;
             _httpContextAccessor = httpContextAccessor;
             _context = context;
-            _roleStore = roleStore;
         }
 
         public UserStore<ApplicationUser> UserStore
         {
             get { return new UserStore<ApplicationUser>(_context); }
         }
+        public RoleStore<ApplicationRole> RoleStore
+        {
+            get { return new RoleStore<ApplicationRole>(_context); }
+        }
+
 
         public UserManager<ApplicationUser> UserManager
         {
@@ -54,10 +58,6 @@ namespace HelpDesk.BLL.Account
             get { return _httpContextAccessor; }
         }
 
-        public RoleStore<ApplicationRole> RoleStore
-        {
-            get { return new RoleStore<ApplicationRole>(_context); }
-        }
 
         public async Task<string> GetNameSurname(string userId)
         {
