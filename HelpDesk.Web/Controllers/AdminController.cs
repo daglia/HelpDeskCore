@@ -21,9 +21,10 @@ namespace HelpDesk.Web.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult UserList()
         {
-            return View();
+            return View(_membershipTools.UserStore.Users.ToList());
         }
     }
 }
