@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace HelpDesk.Web.Controllers
 {
-    public class ErrorController : BaseController
+    public class ErrorController : Controller
     {
         [HttpGet]
         public IActionResult Index()
