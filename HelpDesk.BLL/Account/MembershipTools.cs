@@ -14,6 +14,7 @@ namespace HelpDesk.BLL.Account
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly RoleStore<ApplicationRole> _roleStore;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly MyContext _context;
@@ -31,6 +32,11 @@ namespace HelpDesk.BLL.Account
         {
             get { return new UserStore<ApplicationUser>(_context); }
         }
+        public RoleStore<ApplicationRole> RoleStore
+        {
+            get { return new RoleStore<ApplicationRole>(_context); }
+        }
+
 
         public UserManager<ApplicationUser> UserManager
         {
@@ -51,6 +57,7 @@ namespace HelpDesk.BLL.Account
         {
             get { return _httpContextAccessor; }
         }
+
 
         public async Task<string> GetNameSurname(string userId)
         {
