@@ -74,7 +74,8 @@ namespace HelpDesk.Web.Controllers
                 return RedirectToAction("Error", "Home");
             }
         }
-          [HttpPost]
+
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUserRoles(UpdateUserRoleViewModel model)
         {
@@ -83,7 +84,7 @@ namespace HelpDesk.Web.Controllers
 
             var userId = model.Id;
             var rolIdler = model.Roles;
-            var roleManager = _membershipTools.RoleManager; 
+            var roleManager = _membershipTools.RoleManager;
             var seciliRoller = new string[rolIdler.Count];
             for (var i = 0; i < rolIdler.Count; i++)
             {
@@ -93,10 +94,10 @@ namespace HelpDesk.Web.Controllers
 
             var userManager = _membershipTools.UserManager;
             var user = userManager.FindByIdAsync(userId).Result;
-            var Roles =_membershipTools.UserManager.GetRolesAsync(user).Result;
+            var Roles = _membershipTools.UserManager.GetRolesAsync(user).Result;
             foreach (var identityUserRole in Roles)
             {
-                await userManager.RemoveFromRoleAsync(user, roleManager.FindByNameAsync(identityUserRole).ToString());
+                await userManager.RemoveFromRoleAsync(user, identityUserRole);
             }
 
             for (int i = 0; i < seciliRoller.Length; i++)
@@ -104,7 +105,9 @@ namespace HelpDesk.Web.Controllers
                 await userManager.AddToRoleAsync(user, seciliRoller[i]);
             }
 
-            return RedirectToAction("EditUser", new { id = userId });
+            return RedirectToAction("EditUser", new {id = userId});
+        }
+
         [HttpGet]
         public IActionResult UserList()
         {

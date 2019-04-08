@@ -127,7 +127,7 @@ namespace HelpDesk.Web.Controllers
                             await _membershipTools.UserManager.AddToRoleAsync(newUser, "Technician");
                             break;
                         default:
-                            await _membershipTools.UserManager.AddToRoleAsync(newUser, "Customer");
+                            await _membershipTools.UserManager.AddToRoleAsync(newUser, "Client");
                             break;
                     }
 
