@@ -54,8 +54,8 @@ namespace HelpDesk.Models.Entities
         [DisplayName("Rapor")]
         public string Report { get; set; }
 
-        //  [DisplayName("Fotoğraf")]
-        //  public ICollection<string> PhotoPath { get; set; }
+        [DisplayName("Fotoğraf")]
+        public ICollection<string> PhotoPath { get; set; }
 
         public string ClientId { get; set; }
         public string TechnicianId { get; set; }

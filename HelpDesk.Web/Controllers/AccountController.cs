@@ -105,6 +105,7 @@ namespace HelpDesk.Web.Controllers
                     AvatarPath = null,
                     EmailConfirmed = false,
                     Name = model.Name,
+                    PhoneNumber = model.Phone,
                     Surname = model.Surname,
                     Email = model.Email,
                     UserName = model.UserName,
@@ -150,7 +151,7 @@ namespace HelpDesk.Web.Controllers
                     return View("Register", model);
                 }
 
-                TempData["Message1"] = "Kaydınız alınmıştır. Lütfen giriş yapınız";
+                TempData["Message"] = "Kaydınız alınmıştır. Lütfen giriş yapınız";
                 return RedirectToAction("Login");
             }
             catch (Exception ex)
@@ -292,11 +293,11 @@ namespace HelpDesk.Web.Controllers
                     await file.CopyToAsync(fileStream);
                 }
 
-                //var oldPath = user.AvatarPath;
-                //if (oldPath != "/assets/img/user.png")
-                //{
-                //    System.IO.File.Delete(Path.Combine(oldPath));
-                //}
+                var oldPath = user.AvatarPath;
+                if (oldPath != "/assets/img/user.png")
+                {
+                    System.IO.File.Delete(Path.Combine(oldPath));
+                }
                 user.AvatarPath = "/Uploads/" + fileName + extName;
             }
 

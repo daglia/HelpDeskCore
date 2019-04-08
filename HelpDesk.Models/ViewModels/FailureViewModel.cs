@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
+using Microsoft.AspNetCore.Http;
 
 namespace HelpDesk.Models.ViewModels
 {
@@ -68,7 +69,7 @@ namespace HelpDesk.Models.ViewModels
 
         public List<string> PhotoPath { get; set; }
         [DisplayName("Fotoğraf")]
-        //public List<HttpPostedFileBase> PostedPhoto { get; set; }
+        public List<IFormFile> PostedFile { get; set; }
 
         public List<FailureLogViewModel> FailureLogs { get; set; }
     }
