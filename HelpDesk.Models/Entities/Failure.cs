@@ -55,7 +55,8 @@ namespace HelpDesk.Models.Entities
         public string Report { get; set; }
 
         [DisplayName("Fotoğraf")]
-        public ICollection<string> PhotoPath { get; set; }
+        [NotMapped]
+        public List<string> PhotoPath { get; set; }
 
         public string ClientId { get; set; }
         public string TechnicianId { get; set; }
@@ -70,7 +71,6 @@ namespace HelpDesk.Models.Entities
         public virtual ApplicationUser Operator { get; set; }
         [ForeignKey("SurveyId")]
         public virtual Survey Survey { get; set; }
-
 
         public virtual ICollection<FailureLog> FailureLogs { get; set; } = new HashSet<FailureLog>();
         public virtual ICollection<Photo> Photos { get; set; } = new HashSet<Photo>();

@@ -1,7 +1,91 @@
 ﻿
+@model HelpDesk.Models.ViewModels.FailureViewModel
 @{
-    ViewData["Title"] = "Add";
+    ViewBag.Title = "Yeni Arıza Ekle";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@section top{
+    <style type="text/css">
+        #map {
+            height: 300px;
+            position: relative;
+            overflow: hidden;
+        }
+    </style>
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
+}
+<div id="container" class="effect mainnav-sm navbar-fixed mainnav-fixed">
+    <div class="boxed">
+        <!--CONTENT CONTAINER-->
+        <!--===================================================-->
+        <div class="pageheader hidden-xs">
+            <h3><i class="fa fa-home"></i>Yeni Arıza Bildirimi</h3>
+        </div>
+        <!--Page content-->
+        <!--===================================================-->
+        <div id="page-content" class="col-lg-6 col-lg-offset-3">
+            <br /><br /><br /><br />
+            <h3>@TempData["Message"]</h3>
+            <form asp-action="Add" class="fieldset" enctype="multipart/form-data">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input asp-for="ClientId" type="hidden" />.
+                <div class="form-group row">
+                    <div class="col-sm-9 control-label">
+                        <label asp-for="FailureName" class="control-label"></label>
+                        <input asp-for="FailureName" class="form-control col-sm-9"/>
+                    </div>
+                    <div class="col-sm-9 control-label">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control col-sm-9" />
+                    </div>
+                    <div class="col-sm-9 control-label">
+                        <label asp-for="ProductModel" class="control-label"></label>
+                        <input asp-for="ProductModel" class="form-control col-sm-9" />
+                    </div>
+                    <div class="col-sm-9 control-label">
+                        <label asp-for="Address" class="control-label"></label>
+                        <input asp-for="Address" class="form-control col-sm-9" />
+                    </div>
+                    <div class="col-sm-9 control-label">
+                        <div id="map"></div>
+                        <div class="col-sm-5 control-label">
+                            @Html.LabelFor(x => x.Latitude)
+                            @Html.TextBoxFor(x => x.Latitude, new { @class = "form-control", @id = "ltd", @readonly = "readonly" })
+                        </div>
+                        <div class="col-sm-5 control-label">
+                            @Html.LabelFor(x => x.Longitude)
+                            @Html.TextBoxFor(x => x.Longitude, new { @class = "form-control", @id = "lng", @readonly = "readonly" })
+                        </div>
+                        <div class="col-sm-2 control-label">
+                            <br />
+                            <input type="button" class="btn btn-danger" value="Bul" onclick="getLocation()" />
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <div class="col-sm-9 control-label">
+                        <label asp-for="PostedFile" class="control-label"></label>
+                        <input asp-for="PostedFile" class="form-control col-sm-9" type = "file" multiple = "multiple" />
+                    </div>
+                </div>
+                <div class="row narrow-gutter">
+                    <div class="col-xs-6">
+                        <button type="submit" class="btn btn-primary">Arızayı Gönder</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <!--===================================================-->
+        <!--End page content-->
+    </div>
+    <!--===================================================-->
+    <!--END CONTENT CONTAINER-->
 
-<h2>Add</h2>
-
+</div>
+<!-- SCROLL TOP BUTTON -->
+<!--===================================================-->
+<button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
+<!--===================================================-->
+@section bottom{
+    <script type="text/javascript" src="/assets/js/map.js"></script>
+}

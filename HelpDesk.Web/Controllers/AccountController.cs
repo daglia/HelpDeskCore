@@ -237,7 +237,8 @@ namespace HelpDesk.Web.Controllers
                         Surname = user.Surname,
                         UserName = user.UserName,
                         AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/img/user.png" : user.AvatarPath,
-                        //Location = user.Location
+                        Latitude = user.Latitude,
+                        Longitude = user.Longitude
                     }
                 };
 
@@ -266,8 +267,7 @@ namespace HelpDesk.Web.Controllers
             {
                 return View("UserProfile", model);
             }
-
-
+            
             if (model.UserProfileViewModel.PostedFile != null &&
                    model.UserProfileViewModel.PostedFile.Length > 0)
             {
@@ -276,7 +276,6 @@ namespace HelpDesk.Web.Controllers
                 string extName = Path.GetExtension(file.FileName);
                 fileName = StringHelpers.UrlFormatConverter(fileName);
                 fileName += StringHelpers.GetCode();
-
 
                 var webpath = _hostingEnvironment.WebRootPath;
                 var directorypath = Path.Combine(webpath, "Uploads");
@@ -306,7 +305,12 @@ namespace HelpDesk.Web.Controllers
                 user.Name = model.UserProfileViewModel.Name;
                 user.Surname = model.UserProfileViewModel.Surname;
                 user.PhoneNumber = model.UserProfileViewModel.PhoneNumber;
-                //user.Location = model.Location;
+                if (User.IsInRole("Technician"))
+                {
+                    user.TechnicianStatus = model.UserProfileViewModel.TechnicianStatus;
+                    user.Latitude = model.UserProfileViewModel.Latitude;
+                    user.Longitude = model.UserProfileViewModel.Longitude;
+                }
                 if (user.Email != model.UserProfileViewModel.Email)
                 {
                     //todo tekrar aktivasyon maili gönderilmeli. rolü de aktif olmamış role çevrilmeli.

@@ -142,7 +142,7 @@ namespace HelpDesk.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> AddAsync(FailureViewModel model)
+        public async Task<ActionResult> Add(FailureViewModel model)
         {
             if (!ModelState.IsValid)
             {
