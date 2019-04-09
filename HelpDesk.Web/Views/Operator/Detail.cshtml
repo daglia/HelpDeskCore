@@ -1,0 +1,181 @@
+﻿@using HelpDesk.Models.Enums
+@using HelpDesk.Models.ViewModels
+@model HelpDesk.Models.ViewModels.FailureViewModel
+@{
+    ViewBag.Title = $"{Model.FailureName} arızasının ayrıntıları";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@section top{
+    <link href="~/css/lightbox.css" rel="stylesheet" />
+}
+<div class="pageheader hidden-xs">
+    <h3><i class="fa fa-search-plus"></i>Arıza Ayrıntısı</h3>
+</div>
+<!--CONTENT CONTAINER-->
+<!--===================================================-->
+<div id="content-container">
+    <!--Page content-->
+    <!--===================================================-->
+    <div id="page-content">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">@Model.FailureName adlı arızanın ayrıntıları</h3>
+                        <h3>@TempData["Message"]</h3>
+                        @Html.ValidationSummary()
+                    </div><br /><br /><br /><br />
+                    <!-- Striped Table -->
+                    <!--===================================================-->
+                    <div class="panel-body">
+                        <div class="table-responsive">
+                            <table class="table table-striped">
+                                <tbody>
+                                    <tr>
+                                        <th>Arızanın:</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kodu</th>
+                                        <td>@Model.FailureId</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Adı</th>
+                                        <td>@Model.FailureName</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Parçanın Modeli</th>
+                                        <td>@Model.ProductModel</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Açıklama</th>
+                                        <td>@Model.Description</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Fotoğrafı</th>
+                                        <td>
+                                            @foreach (var photo in Model.PhotoPath)
+                                            {
+                                                <a href="@photo" class="img-thumbnail" data-lightbox="FailurePhoto"><img src="@photo" width="100px" height="100px" alt="@photo" /></a>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Arızayı Bildirenin:</th>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>Kullanıcı ID</th>
+                                        <td>@Model.ClientId</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Adı</th>
+                                        <td>@Model.ClientName</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Soyadı</th>
+                                        <td>@Model.ClientSurname</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Adresi</th>
+                                        <td>@Model.Address</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Teknisyen</th>
+                                        <td>@Model.Technician</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Güncelleme</th>
+                                        <td>
+                                            <form asp-action="TechnicianAdd">
+                                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                            <input asp-for="FailureId" type="hidden" />
+                                            <select asp-for="TechnicianId" asp-items="(List<SelectListItem>)ViewBag.TechnicianList" class="form-control" size="1"></select>
+                                                <button class="btn btn-success" type="submit">Teknisyeni Ata</button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Reddet</th>
+                                        <td>
+                                            <form asp-action="Decline">
+                                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                                <input asp-for="FailureId" type="hidden" />
+                                                <label asp-for="Report" class="form-control"></label>
+                                                <input asp-for="Report" class="btn btn-danger" />
+                                                <span asp-validation-for="Report" class="text-danger"></span>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--===================================================-->
+                    <!-- End Striped Table -->
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">Olaylar</h3><h3></h3>
+                    </div><br />
+                    <div class="panel-body">
+                        <div class="timeline">
+                            <!-- Timeline header -->
+                            <div class="timeline-header">
+                                <div class="timeline-header-title bg-info">Şimdi</div>
+                            </div>
+
+                            @foreach (FailureLogViewModel operation in Model.FailureLogs)
+                            {
+                                <div class="timeline-entry">
+                                    <div class="timeline-stat">
+                                        @switch (operation.FromWhom)
+                                        {
+                                            case IdentityRoles.Operator:
+                                                <div class="timeline-icon bg-success"><i class="fa fa-clipboard fa-lg"></i> </div>
+                                                break;
+                                            case IdentityRoles.Client:
+                                                <div class="timeline-icon bg-info"><i class="fa fa-check fa-lg"></i> </div>
+                                                break;
+                                            case IdentityRoles.Technician:
+                                                <div class="timeline-icon bg-warning"><i class="fa fa-briefcase fa-lg"></i> </div>
+                                                break;
+                                            default:
+                                                <div class="timeline-icon bg-purple"><i class="fa fa-check fa-lg"></i> </div>
+                                                break;
+                                        }
+                                    </div>
+                                    <div class="timeline-label">
+                                        @operation.CreatedDate
+                                        <h3>@operation.Message</h3>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                    <!--===================================================-->
+                    <!-- End Striped Table -->
+                </div>
+            </div>
+
+        </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+    </div>
+</div>
+<!--===================================================-->
+<!-- END OF CONTAINER -->
+
+@section bottom{
+    <script src="~/js/jquery-1.10.2.js"></script>
+    <script src="~/js/lightbox-2.6.js"></script>
+    <script>
+        lightbox.option({
+            'resizeDuration': 200,
+            'wrapAround': true
+        })
+    </script>
+}
