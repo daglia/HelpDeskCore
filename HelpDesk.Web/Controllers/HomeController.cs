@@ -42,6 +42,7 @@ namespace HelpDesk.Web.Controllers
 
         public IActionResult Error()
         {
+            ViewBag.Modeller = ViewBag.Model;
             return View();
         }
     }

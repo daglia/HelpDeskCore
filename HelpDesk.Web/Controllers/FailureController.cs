@@ -222,13 +222,15 @@ namespace HelpDesk.Web.Controllers
             //}
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                ViewBag.Model = new ErrorViewModel()
                 {
                     Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Add",
                     ControllerName = "Failure",
                     ErrorCode = 500
                 };
+
+              
                 return RedirectToAction("Error", "Home");
             }
         }
