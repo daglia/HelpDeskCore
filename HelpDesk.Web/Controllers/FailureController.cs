@@ -28,8 +28,9 @@ namespace HelpDesk.Web.Controllers
         private readonly IRepository<Photo, string> _photoRepo;
         private readonly IRepository<Survey, string> _surveyRepo;
         private readonly IHostingEnvironment _hostingEnvironment;
+        private readonly IMapper _mapper;
 
-        public FailureController(MyContext dbContext, MembershipTools membershipTools, IRepository<Failure, int> failureRepo, IRepository<FailureLog, int> failureLogRepo, IRepository<Photo, string> photoRepo, IRepository<Survey, string> surveyRepo, IHttpContextAccessor httpContext, IHostingEnvironment hostingEnvironment)
+        public FailureController(MyContext dbContext, MembershipTools membershipTools, IRepository<Failure, int> failureRepo, IRepository<FailureLog, int> failureLogRepo, IRepository<Photo, string> photoRepo, IRepository<Survey, string> surveyRepo, IHttpContextAccessor httpContext, IHostingEnvironment hostingEnvironment, IMapper mapper)
         {
             _dbContext = dbContext;
             _membershipTools = membershipTools;
@@ -38,6 +39,7 @@ namespace HelpDesk.Web.Controllers
             _photoRepo = photoRepo;
             _surveyRepo = surveyRepo;
             _hostingEnvironment = hostingEnvironment;
+            _mapper = mapper;
         }
  
         [Authorize]
@@ -53,7 +55,7 @@ namespace HelpDesk.Web.Controllers
             {
                 var data = _failureRepo
                     .GetAll()
-                    .Select(x => Mapper.Map<FailureViewModel>(x))
+                    .Select(x => _mapper.Map<FailureViewModel>(x))
                     .Where(x => x.ClientId == clientId)
                     .OrderBy(x => x.CreatedTime)
                     .ToList();
@@ -79,7 +81,7 @@ namespace HelpDesk.Web.Controllers
             try
             {
                 var x = _failureRepo.GetById(id);
-                var data = Mapper.Map<FailureViewModel>(x);
+                var data = _mapper.Map<FailureViewModel>(x);
                 data.PhotoPath = _photoRepo.GetAll(y => y.FailureId == id).Select(y => y.Path).ToList();
                 data.ClientId = x.ClientId;
                 var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
@@ -93,7 +95,7 @@ namespace HelpDesk.Web.Controllers
                 data.FailureLogs.Clear();
                 foreach (FailureLog failureLog in failureLogs)
                 {
-                    data.FailureLogs.Add(Mapper.Map<FailureLogViewModel>(failureLog));
+                    data.FailureLogs.Add(_mapper.Map<FailureLogViewModel>(failureLog));
                 }
 
                 return View(data);
@@ -117,7 +119,7 @@ namespace HelpDesk.Web.Controllers
             try
             {
                 var x = _failureRepo.GetById(id);
-                var data = Mapper.Map<FailureViewModel>(x);
+                var data = _mapper.Map<FailureViewModel>(x);
 
                 return View(data);
             }
@@ -156,9 +158,16 @@ namespace HelpDesk.Web.Controllers
 
                 model.ClientId = user.Id;
 
-                var data = Mapper.Map<FailureViewModel, Failure>(model);
+                var data = _mapper.Map<FailureViewModel, Failure>(model);
 
                 _failureRepo.Insert(data);
+
+                _failureLogRepo.Insert(new FailureLog()
+                {
+                    FailureId = data.Id,
+                    Message = $"#{data.Id} - {data.FailureName} adlı arıza kaydı oluşturuldu.",
+                    FromWhom = IdentityRoles.Client
+                });
 
                 if (model.PostedFile.Count > 0)
                 {
@@ -194,18 +203,13 @@ namespace HelpDesk.Web.Controllers
                     }
                     );
                 }
-
+                await _dbContext.SaveChangesAsync();
                 var photos = _photoRepo.GetAll(x => x.FailureId == data.Id).ToList();
                 var photo = photos.Select(x => x.Path).ToList();
                 data.PhotoPath = photo;
                 _failureRepo.Update(data);
-
-                _failureLogRepo.Insert(new FailureLog()
-                {
-                    FailureId = data.Id,
-                    Message = $"#{data.Id} - {data.FailureName} adlı arıza kaydı oluşturuldu.",
-                    FromWhom = IdentityRoles.Client
-                });
+                
+                await _dbContext.SaveChangesAsync();
                 TempData["Message"] = $"{model.FailureName} adlı arızanız operatörlerimizce incelenecektir ve size 24 saat içinde dönüş yapılacaktır.";
                 return RedirectToAction("Add");
             }
@@ -242,12 +246,12 @@ namespace HelpDesk.Web.Controllers
                 var survey = _surveyRepo.GetById(code);
                 if (survey == null)
                     return RedirectToAction("Index", "Home");
-                var data = Mapper.Map<Survey, SurveyViewModel>(survey);
+                var data = _mapper.Map<Survey, SurveyViewModel>(survey);
                 return View(data);
             }
             catch (Exception ex)
             {
-                TempData["Message2"] = new ErrorViewModel()
+                TempData["Message"] = new ErrorViewModel()
                 {
                     Text = $"Bir hata oluştu {ex.Message}",
                     ActionName = "Survey",
@@ -281,7 +285,7 @@ namespace HelpDesk.Web.Controllers
                 survey.Suggestions = model.Suggestions;
                 survey.IsDone = true;
                 _surveyRepo.Update(survey);
-                TempData["Message2"] = "Anket tamamlandı.";
+                TempData["Message"] = "Anket tamamlandı.";
                 return RedirectToAction("Index", "Home");
             }
             catch (Exception ex)

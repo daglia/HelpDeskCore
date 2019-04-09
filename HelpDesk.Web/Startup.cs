@@ -15,6 +15,7 @@ using HelpDesk.BLL.Repository.Abstracts;
 using HelpDesk.Models.Entities;
 using HelpDesk.BLL.Account;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.Mvc.ViewFeatures;
 
 namespace HelpDesk.Web
 {
@@ -104,6 +105,8 @@ namespace HelpDesk.Web
             services.AddScoped<MembershipTools, MembershipTools>();
 
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.AddSingleton<ITempDataProvider, CookieTempDataProvider>();
+            services.AddSession();
 
             services.AddAutoMapper();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -125,7 +128,7 @@ namespace HelpDesk.Web
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseAuthentication();
-
+            app.UseSession();
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

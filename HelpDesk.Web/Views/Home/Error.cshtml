@@ -1,8 +1,8 @@
-﻿@model HelpDesk.Models.ViewModels.ErrorViewModel
+﻿@using HelpDesk.Models.ViewModels
 @{
     ViewBag.Title = "Hata | HelpDesk";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var message = TempData["Model"] as HelpDesk.Models.ViewModels.ErrorViewModel;
+    var message = TempData["Model"] as ErrorViewModel;
 }
 
 <div class="cls-content">

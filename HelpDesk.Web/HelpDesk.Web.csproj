@@ -1371,6 +1371,12 @@
     <None Include="wwwroot\assets\plugins\x-editable\img\loading.gif" />
     <None Include="wwwroot\assets\plugins\x-editable\js\bootstrap-editable.js" />
     <None Include="wwwroot\assets\plugins\x-editable\js\bootstrap-editable.min.js" />
+    <None Include="wwwroot\css\lightbox.css" />
+    <None Include="wwwroot\js\lightbox-2.6.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Models\" />
   </ItemGroup>
 
 </Project>

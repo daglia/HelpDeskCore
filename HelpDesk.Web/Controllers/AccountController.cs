@@ -63,7 +63,7 @@ namespace HelpDesk.Web.Controllers
                     Email = user.Email,
                     Id = user.Id,
                     Name = user.Name,
-                    PhoneNumber = user.PhoneNumber,
+                    PhoneNumber = user.Phone,
                     Surname = user.Surname,
                     UserName = user.UserName,
                     TechnicianStatus = user.TechnicianStatus,
@@ -132,9 +132,12 @@ namespace HelpDesk.Web.Controllers
                             break;
                     }
 
-                    UriBuilder uri = new UriBuilder();
-                    string[] hostComponents = Request.Host.ToUriComponent().Split(':');
-                    string SiteUrl = uri.Scheme + System.Uri.SchemeDelimiter + uri.Scheme + hostComponents;
+                    var uri = new UriBuilder()
+                    {
+                        Scheme = Uri.UriSchemeHttps
+                    };
+                    var hostComponents = Request.Host.ToUriComponent();
+                    string SiteUrl = uri.Scheme + System.Uri.SchemeDelimiter + hostComponents;
 
                     EmailService emailService = new EmailService();
                     string body = $"Merhaba <b>{newUser.Name} {newUser.Surname}</b><br>Hesabınızı aktif etmek için aşağıdaki linke tıklayınız<br> <a href='{SiteUrl}/account/activation?code={newUser.ActivationCode}' >Aktivasyon Linki </a> ";
@@ -494,7 +497,7 @@ namespace HelpDesk.Web.Controllers
                 ViewBag.Message = "<span class='alert alert-danger'>Aktivasyon işleminde bir hata oluştu</span>";
             }
 
-            return View();
+            return RedirectToAction("Login","Account");
         }
     }
 }

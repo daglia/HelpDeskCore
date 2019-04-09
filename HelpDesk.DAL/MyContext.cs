@@ -36,7 +36,7 @@ namespace HelpDesk.DAL
         }
 
         public virtual DbSet<Failure> Failures { get; set; }
-        public virtual DbSet<FailureLog> Operations { get; set; }
+        public virtual DbSet<FailureLog> FailureLogs { get; set; }
         public virtual DbSet<Photo> Photos { get; set; }
         public virtual DbSet<Survey> Surveys { get; set; }
 

@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HelpDesk.DAL.Migrations
 {
     [DbContext(typeof(MyContext))]
-    [Migration("20190327075843_A3")]
-    partial class A3
+    [Migration("20190409075648_init")]
+    partial class init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,170 @@ namespace HelpDesk.DAL.Migrations
                 .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.Failure", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<string>("ClientId");
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUserId")
+                        .HasMaxLength(450);
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasMaxLength(300);
+
+                    b.Property<string>("FailureName")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<DateTime?>("FinishingTime");
+
+                    b.Property<bool>("HasWarranty");
+
+                    b.Property<double?>("Latitude");
+
+                    b.Property<double?>("Longitude");
+
+                    b.Property<int>("OperationStatus");
+
+                    b.Property<DateTime?>("OperationTime");
+
+                    b.Property<string>("OperatorId");
+
+                    b.Property<decimal>("Price");
+
+                    b.Property<string>("ProductModel")
+                        .IsRequired()
+                        .HasMaxLength(100);
+
+                    b.Property<int?>("RepairProcess");
+
+                    b.Property<string>("Report");
+
+                    b.Property<DateTime?>("StartingTime");
+
+                    b.Property<string>("SurveyId");
+
+                    b.Property<string>("TechnicianId");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUserId")
+                        .HasMaxLength(450);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ClientId");
+
+                    b.HasIndex("OperatorId");
+
+                    b.HasIndex("SurveyId");
+
+                    b.HasIndex("TechnicianId");
+
+                    b.ToTable("Failures");
+                });
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.FailureLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUserId")
+                        .HasMaxLength(450);
+
+                    b.Property<int>("FailureId");
+
+                    b.Property<int>("FromWhom");
+
+                    b.Property<string>("Message");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUserId")
+                        .HasMaxLength(450);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FailureId");
+
+                    b.ToTable("FailureLogs");
+                });
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.Photo", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUserId")
+                        .HasMaxLength(450);
+
+                    b.Property<int>("FailureId");
+
+                    b.Property<string>("Path")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUserId")
+                        .HasMaxLength(450);
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("FailureId");
+
+                    b.ToTable("Photos");
+                });
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.Survey", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("CreatedDate");
+
+                    b.Property<string>("CreatedUserId")
+                        .HasMaxLength(450);
+
+                    b.Property<bool>("IsDone");
+
+                    b.Property<double>("Pricing");
+
+                    b.Property<double>("Satisfaction");
+
+                    b.Property<double>("Solving");
+
+                    b.Property<double>("Speed");
+
+                    b.Property<string>("Suggestions")
+                        .HasMaxLength(200);
+
+                    b.Property<double>("TechPoint");
+
+                    b.Property<DateTime?>("UpdatedDate");
+
+                    b.Property<string>("UpdatedUserId")
+                        .HasMaxLength(450);
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Surveys");
+                });
 
             modelBuilder.Entity("HelpDesk.Models.IdentityEntities.ApplicationRole", b =>
                 {
@@ -30,7 +194,6 @@ namespace HelpDesk.DAL.Migrations
                         .IsConcurrencyToken();
 
                     b.Property<string>("Description")
-                        .IsRequired()
                         .HasMaxLength(200);
 
                     b.Property<string>("Name")
@@ -56,6 +219,10 @@ namespace HelpDesk.DAL.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
+                    b.Property<string>("ActivationCode");
+
+                    b.Property<string>("AvatarPath");
+
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -64,9 +231,13 @@ namespace HelpDesk.DAL.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
+                    b.Property<double?>("Latitude");
+
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
+
+                    b.Property<double?>("Longitude");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -80,6 +251,8 @@ namespace HelpDesk.DAL.Migrations
 
                     b.Property<string>("PasswordHash");
 
+                    b.Property<string>("Phone");
+
                     b.Property<string>("PhoneNumber");
 
                     b.Property<bool>("PhoneNumberConfirmed");
@@ -89,6 +262,8 @@ namespace HelpDesk.DAL.Migrations
                     b.Property<string>("Surname")
                         .IsRequired()
                         .HasMaxLength(60);
+
+                    b.Property<int?>("TechnicianStatus");
 
                     b.Property<bool>("TwoFactorEnabled");
 
@@ -192,6 +367,41 @@ namespace HelpDesk.DAL.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.Failure", b =>
+                {
+                    b.HasOne("HelpDesk.Models.IdentityEntities.ApplicationUser", "Client")
+                        .WithMany()
+                        .HasForeignKey("ClientId");
+
+                    b.HasOne("HelpDesk.Models.IdentityEntities.ApplicationUser", "Operator")
+                        .WithMany()
+                        .HasForeignKey("OperatorId");
+
+                    b.HasOne("HelpDesk.Models.Entities.Survey", "Survey")
+                        .WithMany("Failures")
+                        .HasForeignKey("SurveyId");
+
+                    b.HasOne("HelpDesk.Models.IdentityEntities.ApplicationUser", "Technician")
+                        .WithMany()
+                        .HasForeignKey("TechnicianId");
+                });
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.FailureLog", b =>
+                {
+                    b.HasOne("HelpDesk.Models.Entities.Failure", "Failure")
+                        .WithMany("FailureLogs")
+                        .HasForeignKey("FailureId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HelpDesk.Models.Entities.Photo", b =>
+                {
+                    b.HasOne("HelpDesk.Models.Entities.Failure", "Failure")
+                        .WithMany("Photos")
+                        .HasForeignKey("FailureId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
