@@ -128,11 +128,11 @@
                                 <div class="timeline-header-title bg-info">Şimdi</div>
                             </div>
 
-                            @foreach (FailureLogViewModel operation in Model.FailureLogs)
+                            @foreach (FailureLogViewModel failureLog in Model.FailureLogs)
                             {
                                 <div class="timeline-entry">
                                     <div class="timeline-stat">
-                                        @switch (operation.FromWhom)
+                                        @switch (failureLog.FromWhom)
                                         {
                                             case IdentityRoles.Operator:
                                                 <div class="timeline-icon bg-success"><i class="fa fa-clipboard fa-lg"></i> </div>
@@ -149,8 +149,8 @@
                                         }
                                     </div>
                                     <div class="timeline-label">
-                                        @operation.CreatedDate
-                                        <h3>@operation.Message</h3>
+                                        @failureLog.CreatedDate
+                                        <h3>@failureLog.Message</h3>
                                     </div>
                                 </div>
                             }
