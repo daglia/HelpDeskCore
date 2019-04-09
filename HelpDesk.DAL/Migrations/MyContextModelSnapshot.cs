@@ -118,7 +118,7 @@ namespace HelpDesk.DAL.Migrations
 
                     b.HasIndex("FailureId");
 
-                    b.ToTable("Operations");
+                    b.ToTable("FailureLogs");
                 });
 
             modelBuilder.Entity("HelpDesk.Models.Entities.Photo", b =>
