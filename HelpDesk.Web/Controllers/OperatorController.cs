@@ -30,14 +30,16 @@ namespace HelpDesk.Web.Controllers
         private readonly IRepository<Photo, string> _photoRepo;
         private readonly IRepository<FailureLog, int> _failureLogRepo;
         private readonly IRepository<Failure, int> _failureRepo;
+        private readonly IMapper _mapper;
         
-        public OperatorController(MyContext dbContext, MembershipTools membershipTools, IRepository<Failure, int> failureRepo, IRepository<FailureLog, int> failureLogRepo, IRepository<Photo, string> photoRepo)
+        public OperatorController(MyContext dbContext, MembershipTools membershipTools, IRepository<Failure, int> failureRepo, IRepository<FailureLog, int> failureLogRepo, IRepository<Photo, string> photoRepo, IMapper mapper)
         {
             _dbContext = dbContext;
             _membershipTools = membershipTools;
             _failureRepo = failureRepo;
             _failureLogRepo = failureLogRepo;
             _photoRepo = photoRepo;
+            _mapper = mapper;
         }
         public IActionResult Index()
         {
@@ -50,7 +52,7 @@ namespace HelpDesk.Web.Controllers
             try
             {
                 var x = _failureRepo.GetById(id);
-                var data = Mapper.Map<FailureViewModel>(x);
+                var data = _mapper.Map<FailureViewModel>(x);
                 data.PhotoPath = _photoRepo.GetAll(y => y.FailureId == id).Select(y => y.Path).ToList();
                 data.ClientId = x.ClientId;
                 var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
@@ -64,18 +66,16 @@ namespace HelpDesk.Web.Controllers
                 data.FailureLogs.Clear();
                 foreach (FailureLog failureLog in failureLogs)
                 {
-                    data.FailureLogs.Add(Mapper.Map<FailureLogViewModel>(failureLog));
+                    data.FailureLogs.Add(_mapper.Map<FailureLogViewModel>(failureLog));
                 }
 
-                var userId = data.ClientId;
-                var userManager = _membershipTools.UserManager;
-                var user = userManager.FindByIdAsync(userId).Result;
-                var technicianRole =_membershipTools.UserManager.GetRolesAsync(user).Result;
-                for (int i = 0; i < technicianRole.Count; i++)
+                var technicians = _membershipTools.UserManager.GetUsersInRoleAsync("Technician").Result;
+
+                for (int i = 0; i < technicians.Count; i++)
                 {
                     var distance = 0.0;
                     string distanceString = "";
-                    var technician = _membershipTools.UserManager.FindByIdAsync(technicianRole[i]).Result;
+                    var technician = technicians[i];
                     if (technician.Latitude.HasValue && technician.Longitude.HasValue && data.Latitude.HasValue && data.Longitude.HasValue)
                     {
                         var failureCoordinate = new GeoCoordinate(data.Latitude.Value, data.Longitude.Value);
@@ -155,7 +155,7 @@ namespace HelpDesk.Web.Controllers
             {
                 var data = _failureRepo
                     .GetAll()
-                    .Select(x => Mapper.Map<FailureViewModel>(x))
+                    .Select(x => _mapper.Map<FailureViewModel>(x))
                     .OrderBy(x => x.OperationTime)
                     .ToList();
                 return View(data);
