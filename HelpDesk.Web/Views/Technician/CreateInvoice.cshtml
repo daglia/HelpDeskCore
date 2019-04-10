@@ -1,0 +1,72 @@
+﻿@model HelpDesk.Models.ViewModels.FailureViewModel
+@using HelpDesk.Models.Enums
+@{
+    ViewBag.Title = "Fatura Oluşturma";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="pageheader hidden-xs">
+    <h3><i class="fa fa-search-plus"></i>Arıza Fatura Ayrıntısı</h3>
+</div>
+<div id="content-container">
+    <!--Page content-->
+    <!--===================================================-->
+    <div id="page-content">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <div class="panel">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">#@Model.FailureId - @Model.FailureName adlı arızanın fatura bilgileri</h3>
+                    </div><br />
+                    <!-- Striped Table -->
+                    <!--===================================================-->
+                    <div class="panel-body">
+
+                        <br /><br /><br /><br />
+                        <h3>@TempData["Message"]</h3>
+                        
+                        <form asp-action="CreateInvoice" class="form-horizontal" enctype="multipart/form-data">
+                            <input asp-for="FailureId" type="hidden" />
+                            <div class="form-group row">
+                                <div class="col-sm-9 control-label">
+                                    <label class="form-checkbox form-icon form-text">
+                                        <input asp-for="HasWarranty" /> Garanti
+                                    </label>
+                                </div>
+                                <div class="col-sm-9 control-label">
+                                    <label asp-for="Price" class="control-label"></label>
+                                    <input asp-for="Price" class="form-control" />
+                                    <span asp-validation-for="Price" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-9 control-label">
+                                    <label asp-for="Report" class="control-label"></label>
+                                    <input asp-for="Report" class="form-control" />
+                                    <span asp-validation-for="Report" class="text-danger"></span>
+                                </div>
+                                <div class="col-sm-9 control-label btn-group" data-toggle="buttons">
+                                    <label asp-for="RepairProcess" class="btn btn-mint">
+                                        <input asp-for="RepairProcess" value="@RepairProcesses.Successful" class="form-control" type="radio"/> Başarılı
+                                    </label>
+                                    <label asp-for="RepairProcess" class="btn btn-mint">
+                                        <input asp-for="RepairProcess" value="@RepairProcesses.Failed" class="form-control" type="radio"/> Başarısız
+                                    </label>
+                                </div>
+                                <div class="row narrow-gutter">
+                                    <div class="col-xs-6">
+                                        <button type="submit" class="btn btn-primary">İşlemi Bitir</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                    <!--===================================================-->
+                    <!-- End Striped Table -->
+                </div>
+            </div>
+        </div>
+        <!--===================================================-->
+        <!--END CONTENT CONTAINER-->
+    </div>
+</div>
+
+
