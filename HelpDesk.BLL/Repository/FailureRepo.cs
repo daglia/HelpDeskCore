@@ -10,6 +10,8 @@ namespace HelpDesk.BLL.Repository
     public class FailureRepo : RepositoryBase<Failure,int>
     {
         private readonly MyContext _dbContext;
+
+      
         public FailureRepo(MyContext dbContext) : base(dbContext)
         {
             _dbContext = dbContext;

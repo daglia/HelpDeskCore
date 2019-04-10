@@ -1,0 +1,74 @@
+﻿@model HelpDesk.Models.ViewModels.SurveyViewModel
+
+@{
+    ViewBag.Title = "Değerlendirme Anketi";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<form asp-action="Survey" class="form-horizontal" enctype="multipart/form-data">
+    <input asp-for="SurveyId" type="hidden"  />
+    
+    <div class="form-horizontal col-md-6">
+        <hr />
+        <div class="form-group">
+            <label asp-for="Satisfaction" class="control-label col-md-2"></label>
+            
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Satisfaction, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Satisfaction, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="TechPoint" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.TechPoint, new {htmlAttributes = new {@class = "form-control"}})
+                @Html.ValidationMessageFor(model => model.TechPoint, "", new {@class = "text-danger"})
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Speed" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Speed, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Speed, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Pricing" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Pricing, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Pricing, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Solving" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Solving, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Solving, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="Suggestions" class="control-label col-md-2"></label>
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Suggestions, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Suggestions, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Gönder" class="btn btn-default" />
+            </div>
+            <br />
+            <br />
+            <br />
+        </div>
+    </div>
+</form>
+
+
+

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using HelpDesk.BLL.Account;
+using HelpDesk.BLL.Repository;
 using HelpDesk.DAL;
 using HelpDesk.Models.IdentityEntities;
 using HelpDesk.Models.ViewModels;
@@ -19,11 +20,15 @@ namespace HelpDesk.Web.Controllers
     {
         private readonly MembershipTools _membershipTools;
         private readonly MyContext _dbContext;
+        private readonly FailureRepo _failureRepo;
+        private readonly SurveyRepo _surveyRepo;
 
-        public AdminController(MembershipTools membershipTools, MyContext dbContext) :base(membershipTools)
+        public AdminController(MembershipTools membershipTools, MyContext dbContext, FailureRepo failureRepo,SurveyRepo surveyRepo) :base(membershipTools)
         {
             _membershipTools = membershipTools;
             _dbContext = dbContext;
+            _failureRepo = failureRepo;
+            _surveyRepo = surveyRepo;
         }
 
        
@@ -114,6 +119,62 @@ namespace HelpDesk.Web.Controllers
         public IActionResult UserList()
         {
             return View(_membershipTools.UserStore.Users.ToList());
+        }
+        [HttpGet]
+        public ActionResult Reports()
+        {
+            try
+            {
+                var failureList = _failureRepo.GetAll(x => x.SurveyId != null).ToList();
+                var surveyList = _surveyRepo.GetAll().Where(x => x.IsDone).ToList();
+                var totalSpeed = 0.0;
+                var totalTech = 0.0;
+                var totalPrice = 0.0;
+                var totalSatisfaction = 0.0;
+                var totalSolving = 0.0;
+                var count = failureList.Count;
+
+                if (count == 0)
+                {
+                    TempData["Message"] = "Herhangi bir kayıt bulunamadı.";
+                    return RedirectToAction("Index", "Home");
+                }
+                foreach (var survey in surveyList)
+                {
+                    totalSpeed += survey.Speed;
+                    totalTech += survey.TechPoint;
+                    totalPrice += survey.Pricing;
+                    totalSatisfaction += survey.Satisfaction;
+                    totalSolving += survey.Solving;
+                }
+                var totalDays = 0;
+
+                foreach (var failure in failureList)
+                {
+                    if (failure.FinishingTime.HasValue)
+                        totalDays += failure.FinishingTime.Value.DayOfYear - failure.CreatedDate.DayOfYear;
+                }
+
+                ViewBag.AvgSpeed = totalSpeed / count;
+                ViewBag.AvgTech = totalTech / count;
+                ViewBag.AvgPrice = totalPrice / count;
+                ViewBag.AvgSatisfaction = totalSatisfaction / count;
+                ViewBag.AvgSolving = totalSolving / count;
+                ViewBag.AvgTime = totalDays / failureList.Count;
+
+                return View(surveyList);
+            }
+            catch (Exception ex)
+            {
+                TempData["Message"] = new ErrorViewModel()
+                {
+                    Text = $"Bir hata oluştu {ex.Message}",
+                    ActionName = "Reports",
+                    ControllerName = "Admin",
+                    ErrorCode = 500
+                };
+                return RedirectToAction("Error", "Home");
+            }
         }
     }
 }
