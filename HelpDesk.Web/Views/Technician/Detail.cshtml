@@ -1,6 +1,8 @@
-﻿@using HelpDesk.Models.Enums
+﻿@using HelpDesk.BLL.Account
+@using HelpDesk.Models.Enums
 @using HelpDesk.Models.ViewModels
 @model HelpDesk.Models.ViewModels.FailureViewModel
+@inject MembershipTools MembershipTools
 @{
     ViewBag.Title = $"{Model.FailureName} arızasının ayrıntıları";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -90,25 +92,23 @@
                                         <td>
                                             @if (!Model.FinishingTime.HasValue)
                                             {
-                                                using (Html.BeginForm("TechnicianStartWork", "Technician", FormMethod.Post, new { @class = "form-horizontal" }))
-                                                {
-                                                    @Html.AntiForgeryToken()
-                                                    @Html.HiddenFor(x => x.FailureId)
-                                                    switch (Model.TechnicianStatus)
+                                                <form asp-action="TechnicianStartWork" class="form-horizontal">
+                                                    <input asp-for="FailureId" type="hidden"/>
+                                                    @switch (MembershipTools.GetTechnicianStatus(Model.TechnicianId).Result)
                                                     {
-                                                        case HelpDesk.Models.Enums.TechnicianStatuses.Available:
-                                                            <button class="btn btn-warning" type="submit">Yola Çıktım</button>
-                                                            break;
-                                                        case HelpDesk.Models.Enums.TechnicianStatuses.OnWay:
-                                                            <button class="btn btn-success" type="submit">Hedefe Ulaştım</button>
-                                                            break;
-                                                        case HelpDesk.Models.Enums.TechnicianStatuses.OnWork:
-                                                            <button class="btn btn-success" type="submit">İşlem Tamamlandı</button>
-                                                            break;
+                                                        case TechnicianStatuses.Available:
+                                                        <button class="btn btn-warning" type="submit">Yola Çıktım</button>
+                                                        break;
+                                                        case TechnicianStatuses.OnWay:
+                                                        <button class="btn btn-success" type="submit">Hedefe Ulaştım</button>
+                                                        break;
+                                                        case TechnicianStatuses.OnWork:
+                                                        <button class="btn btn-success" type="submit">İşlem Tamamlandı</button>
+                                                        break;
                                                         default:
-                                                            break;
+                                                        break;
                                                     }
-                                                }
+                                                </form>
                                             }
                                             else
                                             {
@@ -116,8 +116,6 @@
                                             }
                                         </td>
                                     </tr>
-
-                                    <tr>
                                 </tbody>
                             </table>
                         </div>
