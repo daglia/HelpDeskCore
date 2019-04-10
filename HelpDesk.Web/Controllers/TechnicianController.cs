@@ -114,7 +114,7 @@ namespace HelpDesk.Web.Controllers
             try
             {
                 var failure = _failureRepo.GetById(model.FailureId);
-
+                failure.Technician = _membershipTools.UserManager.FindByIdAsync(failure.TechnicianId).Result;
                 switch (failure.Technician.TechnicianStatus)
                 {
                     case TechnicianStatuses.Available:
