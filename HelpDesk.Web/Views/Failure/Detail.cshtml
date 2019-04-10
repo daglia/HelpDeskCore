@@ -89,7 +89,15 @@
                                     </tr>
                                     <tr>
                                         <th>Teknisyen</th>
-                                        <td>@Model.Technician</td>
+                                        @if (@Model.Technician != null)
+                                        {
+                                            <td>@Model.Technician</td>
+                                        }
+                                        else
+                                        {
+                                            <td>Bulamadım</td>
+                                        }
+
                                     </tr>
                                     <tr>
                                         <th>Teknisyenin durumu</th>

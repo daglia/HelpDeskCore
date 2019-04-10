@@ -17,12 +17,13 @@ using System.Device.Location;
 using HelpDesk.BLL.Services.Senders;
 using HelpDesk.Models.Models;
 using Microsoft.AspNetCore.Authorization;
+using Newtonsoft.Json;
 
 
 namespace HelpDesk.Web.Controllers
 {
     public class OperatorController : Controller
-    {   
+    {
         List<SelectListItem> Technicians = new List<SelectListItem>();
 
         private readonly MyContext _dbContext;
@@ -31,7 +32,7 @@ namespace HelpDesk.Web.Controllers
         private readonly IRepository<FailureLog, int> _failureLogRepo;
         private readonly IRepository<Failure, int> _failureRepo;
         private readonly IMapper _mapper;
-        
+
         public OperatorController(MyContext dbContext, MembershipTools membershipTools, IRepository<Failure, int> failureRepo, IRepository<FailureLog, int> failureLogRepo, IRepository<Photo, string> photoRepo, IMapper mapper)
         {
             _dbContext = dbContext;
@@ -58,7 +59,7 @@ namespace HelpDesk.Web.Controllers
                 var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
                 data.ClientName = client.Name;
                 data.ClientSurname = client.Surname;
-                var failureLogs =  _failureLogRepo 
+                var failureLogs = _failureLogRepo
                     .GetAll()
                     .Where(y => y.FailureId == data.FailureId)
                     .OrderByDescending(y => y.CreatedDate)
@@ -99,15 +100,17 @@ namespace HelpDesk.Web.Controllers
 
                 return View(data);
             }
+
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Detail",
                     ControllerName = "Operator",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -134,15 +137,17 @@ namespace HelpDesk.Web.Controllers
 
                 return RedirectToAction("Index", "Operator");
             }
+
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "FailureAccept",
                     ControllerName = "Operator",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -162,13 +167,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Index",
                     ControllerName = "Admin",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -210,13 +216,14 @@ namespace HelpDesk.Web.Controllers
 
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "TechnicianAdd",
                     ControllerName = "Operator",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -233,7 +240,7 @@ namespace HelpDesk.Web.Controllers
                 {
                     TempData["Message"] =
                         $"{failure.Id} nolu arıza zaten reddedilmiştir.";
-                    return RedirectToAction("Detail", "Operator", new {id = model.FailureId});
+                    return RedirectToAction("Detail", "Operator", new { id = model.FailureId });
                 }
 
                 failure.OperationStatus = OperationStatuses.Declined;
@@ -260,20 +267,23 @@ namespace HelpDesk.Web.Controllers
                     Subject = $"{failure.FailureName} adlı arızanız reddedilmiştir. | Teknik Servisçi"
                 }, failure.Client.Email);
 
-                return RedirectToAction("Detail", "Operator", new {id = model.FailureId});
+                return RedirectToAction("Detail", "Operator", new { id = model.FailureId });
             }
+
 
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Decline",
                     ControllerName = "Operator",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
+
         }
     }
 }

@@ -1,15 +1,18 @@
 ﻿@using HelpDesk.Models.ViewModels
+@using Newtonsoft.Json
+
 @{
     ViewBag.Title = "Hata | HelpDesk";
     Layout = "~/Views/Shared/_Layout.cshtml";
-    var message = TempData["Model"] as ErrorViewModel;
+    var message = JsonConvert.DeserializeObject<ErrorViewModel>((string)TempData["ErrorMessage"]);
+    Console.WriteLine();
 }
 
 <div class="cls-content">
     <div class="error-full-page">
         <!-- start: 404 -->
         <div class="col-sm-12 page-error pad-30">
-            <div class="error-number text-primary">@(message?.ErrorCode ?? 404)</div>
+            <div class="error-number text-primary">@(message?.ErrorCode??"404")</div>
             <div class="error-details col-sm-6 col-sm-offset-3">
                 <h3> Bir hata oldu!</h3>
                 <p>

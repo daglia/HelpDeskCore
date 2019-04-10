@@ -15,6 +15,7 @@ using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using EmailService = HelpDesk.BLL.Services.Senders.EmailService;
 
 namespace HelpDesk.Web.Controllers
@@ -25,7 +26,7 @@ namespace HelpDesk.Web.Controllers
         private readonly MembershipTools _membershipTools;
         private readonly MyContext _dbContext;
 
-        public AccountController(MembershipTools membershipTools, IHostingEnvironment hostingEnvironment, MyContext dbContext):base(membershipTools)
+        public AccountController(MembershipTools membershipTools, IHostingEnvironment hostingEnvironment, MyContext dbContext) : base(membershipTools)
         {
             _membershipTools = membershipTools;
             _hostingEnvironment = hostingEnvironment;
@@ -159,13 +160,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Register",
                     ControllerName = "Account",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -205,13 +207,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Index",
                     ControllerName = "Account",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -249,13 +252,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "UserProfile",
                     ControllerName = "Account",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -270,7 +274,7 @@ namespace HelpDesk.Web.Controllers
             {
                 return View("UserProfile", model);
             }
-            
+
             if (model.UserProfileViewModel.PostedFile != null &&
                    model.UserProfileViewModel.PostedFile.Length > 0)
             {
@@ -326,13 +330,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
                     Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "UserProfile",
                     ControllerName = "Account",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -386,13 +391,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "ChangePassword",
                     ControllerName = "Account",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -436,13 +442,14 @@ namespace HelpDesk.Web.Controllers
 
                 if (result == 0)
                 {
-                    TempData["Message"] = new ErrorViewModel()
+                    var mdl = new ErrorViewModel()
                     {
-                        Text = $"Bir hata oluştu",
-                        ActionName = "RecoverPassword",
-                        ControllerName = "Account",
-                        ErrorCode = 500
+                        Text = $"Bir hata oluştu:",
+                        ActionName = "TechnicianAdd",
+                        ControllerName = "Operator",
+                        ErrorCode = "500"
                     };
+                    TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                     return RedirectToAction("Error", "Home");
                 }
 
@@ -453,13 +460,14 @@ namespace HelpDesk.Web.Controllers
 
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "RecoverPassword",
                     ControllerName = "Account",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
             TempData["Message"] = $"{model.Email} mail adresine yeni şifre gönderildi.";
@@ -497,7 +505,7 @@ namespace HelpDesk.Web.Controllers
                 ViewBag.Message = "<span class='alert alert-danger'>Aktivasyon işleminde bir hata oluştu</span>";
             }
 
-            return RedirectToAction("Login","Account");
+            return RedirectToAction("Login", "Account");
         }
     }
 }
