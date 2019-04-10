@@ -1,0 +1,67 @@
+﻿
+
+@using HelpDesk.BLL.Account
+@inject MembershipTools _membershipTools
+@{
+    ViewBag.Title = "Tamamlanmış Kayıtlar";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div>
+    <h3 style="color:green">@TempData["Message"]</h3>
+    <h3 style="color:red">@TempData["Message2"]</h3>
+    <h3 style="color:red">@TempData["Message3"]</h3>
+    <hr />
+    <!-- Page Inner -->
+    <div class="page-inner">
+        <div id="main-wrapper">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="panel panel-white">
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="example2" class="display table" style="width: 100%; mso-cellspacing: 0;">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Id</th>
+                                            <th>Açıklama</th>
+                                            <th>Durum</th>
+                                            <th>Teknisyen</th>
+                                            <th>Konum</th>
+                                            <th>Arıza Kapanma Tarihi</th>
+                                            <th>Aksiyon</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < Model.Count; i++)
+                                        {
+                                            var current = Model[i];
+
+                                            <tr style="background: lightgrey">
+                                                <th>@(i + 1)</th>
+                                                <td>@current.Id</td>
+                                                <td>@current.Description</td>
+                                                <td>@current.RepairProcess</td>
+                                                <td style="text-align:justify">@(current.TechnicianId == null ? "Teknisyen Atanmadı" : _membershipTools.GetNameSurname(current.TechnicianId))</td>
+                                                <td>@current.Address</td>
+                                                <td>@current.FinishingTime.ToLongDateString()</td>
+                                                <td>
+                                                    <a href="@Url.Action("Detail", "Failure",new {id=current.Id})" class="btn btn-success">Detay</a>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- Row -->
+        </div><!-- Main Wrapper -->
+
+    </div><!-- /Page Inner -->
+    <div class="col-md-4">
+        <a href="@Url.Action("Index","Home")" class="btn btn-block btn-instagram">AnaSayfa</a>
+    </div>
+</div>
+
