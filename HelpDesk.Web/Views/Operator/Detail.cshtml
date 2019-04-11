@@ -73,11 +73,11 @@
                                     </tr>
                                     <tr>
                                         <th>Adı</th>
-                                        <td>@(Model.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Name)</td>
+                                        <td>@(Model.ClientId == null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Name)</td>
                                     </tr>
                                     <tr>
                                         <th>Soyadı</th>
-                                        <td>@(Model.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Surname)</td>
+                                        <td>@(Model.ClientId == null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Surname)</td>
                                     </tr>
                                     <tr>
                                         <th>Adresi</th>
@@ -85,7 +85,7 @@
                                     </tr>
                                     <tr>
                                         <th>Teknisyen</th>
-                                        <td>@(Model.TechnicianId != null ? "-" : _membershipTools.GetNameSurname(Model.TechnicianId).Result)</td>
+                                        <td>@(Model.TechnicianId == null ? "-" : _membershipTools.GetNameSurname(Model.TechnicianId).Result)</td>
                                     </tr>
                                     <tr>
                                         <th>Güncelleme</th>

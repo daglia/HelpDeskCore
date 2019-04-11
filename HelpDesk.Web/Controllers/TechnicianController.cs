@@ -251,7 +251,7 @@ namespace HelpDesk.Web.Controllers
                 string siteUrl = uri.Scheme + System.Uri.SchemeDelimiter + hostComponents;
 
                 EmailService emailService = new EmailService();
-                var body = $"Merhaba <b>{clientNameSurname}</b><br>{failure.Description} adlı arıza kaydınız kapanmıştır.<br>Değerlendirmeniz için aşağıda linki bulunan anketi doldurmanızı rica ederiz.<br> <a href='{siteUrl}/failure/survey?code={failure.SurveyId}' >Anket Linki </a> ";
+                var body = $"Merhaba <b>{clientNameSurname.Result}</b><br>{failure.Description} adlı arıza kaydınız kapanmıştır.<br>Değerlendirmeniz için aşağıda linki bulunan anketi doldurmanızı rica ederiz.<br> <a href='{siteUrl}/failure/survey?code={failure.SurveyId}' >Anket Linki </a> ";
                 emailService.Send(new EmailModel() { Body = body, Subject = "Değerlendirme Anketi" }, user.Email);
 
                 return RedirectToAction("Detail", "Technician", new
