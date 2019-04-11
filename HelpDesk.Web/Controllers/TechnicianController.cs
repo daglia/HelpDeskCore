@@ -14,6 +14,7 @@ using HelpDesk.Models.Models;
 using HelpDesk.Models.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 
 namespace HelpDesk.Web.Controllers
 {
@@ -63,7 +64,7 @@ namespace HelpDesk.Web.Controllers
                     Text = $"Bir hata oluştu {ex.Message}",
                     ActionName = "Index",
                     ControllerName = "Home",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
                 return RedirectToAction("Error", "Home");
 
@@ -97,13 +98,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Detail",
-                    ControllerName = "Operator",
-                    ErrorCode = 500
+                    ControllerName = "Technician",
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -173,13 +175,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "TechnicianStartWork",
                     ControllerName = "Technician",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -193,13 +196,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "TechnicianReport",
                     ControllerName = "Technician",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
@@ -259,13 +263,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Model"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
-                    ActionName = "Detail",
-                    ControllerName = "Operator",
-                    ErrorCode = 500
+                    Text = $"Bir hata oluştu: {ex.Message}",
+                    ActionName = "CreateInvoice",
+                    ControllerName = "Technician",
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }

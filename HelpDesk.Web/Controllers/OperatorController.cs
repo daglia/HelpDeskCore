@@ -163,6 +163,26 @@ namespace HelpDesk.Web.Controllers
                     .Select(x => _mapper.Map<FailureViewModel>(x))
                     .OrderBy(x => x.OperationTime)
                     .ToList();
+                //foreach (var model in data)
+                //{
+                //    var client = _membershipTools.UserManager.FindByIdAsync(model.ClientId).Result;
+                //    var op = _membershipTools.UserManager.FindByIdAsync(model.OperatorId).Result;
+                //    var tech = _membershipTools.UserManager.FindByIdAsync(model.TechnicianId).Result;
+
+                //    model.ClientName = client.Name;
+                //    model.ClientSurname = client.Surname;
+                //    if (model.Operator is null) model.Operator = "-";
+                //    else
+                //    {
+                //        model.Operator =  op.Name + " " + op.Surname;
+                //    }
+
+                //    if (model.Technician is null) model.Operator = "-";
+                //    else
+                //    {
+                //        model.Operator = tech.Name + " " + tech.Surname;
+                //    }
+                //}
                 return View(data);
             }
             catch (Exception ex)
@@ -221,6 +241,35 @@ namespace HelpDesk.Web.Controllers
                     Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "TechnicianAdd",
                     ControllerName = "Operator",
+                    ErrorCode = "500"
+                };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
+                return RedirectToAction("Error", "Home");
+            }
+        }
+
+        [HttpGet]
+        [Authorize(Roles = "Admin, Operator")]
+        public ActionResult OperationList()
+        {
+            var operatorId = _membershipTools.UserManager.GetUserAsync(HttpContext.User).Result.Id;
+            try
+            {
+                var data = _failureRepo
+                    .GetAll()
+                    .Select(x => _mapper.Map<FailureViewModel>(x))
+                    .Where(x => x.OperatorId == operatorId)
+                    .OrderBy(x => x.OperationTime)
+                    .ToList();
+                return View(data);
+            }
+            catch (Exception ex)
+            {
+                var mdl = new ErrorViewModel()
+                {
+                    Text = $"Bir hata oluştu {ex.Message}",
+                    ActionName = "Index",
+                    ControllerName = "Admin",
                     ErrorCode = "500"
                 };
                 TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);

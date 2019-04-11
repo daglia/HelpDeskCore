@@ -166,13 +166,14 @@ namespace HelpDesk.Web.Controllers
             }
             catch (Exception ex)
             {
-                TempData["Message"] = new ErrorViewModel()
+                var mdl = new ErrorViewModel()
                 {
-                    Text = $"Bir hata oluştu {ex.Message}",
+                    Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Reports",
                     ControllerName = "Admin",
-                    ErrorCode = 500
+                    ErrorCode = "500"
                 };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
                 return RedirectToAction("Error", "Home");
             }
         }
