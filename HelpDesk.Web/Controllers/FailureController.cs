@@ -157,11 +157,7 @@ namespace HelpDesk.Web.Controllers
             }
             try
             {
-                var username = _membershipTools.IHttpContextAccessor.HttpContext.User.FindFirst(ClaimTypes.Name)?.Value;
-
-                var user = await _membershipTools.UserManager.FindByNameAsync(username);
-
-                model.ClientId = user.Id;
+                model.ClientId = _membershipTools.UserManager.GetUserAsync(HttpContext.User).Result.Id;
 
                 var data = _mapper.Map<FailureViewModel, Failure>(model);
 
@@ -174,7 +170,7 @@ namespace HelpDesk.Web.Controllers
                     FromWhom = IdentityRoles.Client
                 });
 
-                if (model.PostedFile.Count > 0)
+                if (model.PostedFile != null || model.PostedFile.Count > 0)
                 {
                     model.PostedFile.ForEach(async file =>
                     {

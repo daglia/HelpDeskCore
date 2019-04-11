@@ -5,7 +5,9 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using HelpDesk.BLL.Account;
 using HelpDesk.BLL.Repository;
+using HelpDesk.BLL.Repository.Abstracts;
 using HelpDesk.DAL;
+using HelpDesk.Models.Entities;
 using HelpDesk.Models.IdentityEntities;
 using HelpDesk.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
@@ -20,10 +22,10 @@ namespace HelpDesk.Web.Controllers
     {
         private readonly MembershipTools _membershipTools;
         private readonly MyContext _dbContext;
-        private readonly FailureRepo _failureRepo;
-        private readonly SurveyRepo _surveyRepo;
+        private readonly IRepository<Failure,int> _failureRepo;
+        private readonly IRepository<Survey, string> _surveyRepo;
 
-        public AdminController(MembershipTools membershipTools, MyContext dbContext, FailureRepo failureRepo,SurveyRepo surveyRepo) :base(membershipTools)
+        public AdminController(MembershipTools membershipTools, MyContext dbContext, IRepository<Failure,int> failureRepo, IRepository<Survey, string> surveyRepo) :base(membershipTools)
         {
             _membershipTools = membershipTools;
             _dbContext = dbContext;
