@@ -57,8 +57,7 @@ namespace HelpDesk.Web.Controllers
                 data.PhotoPath = _photoRepo.GetAll(y => y.FailureId == id).Select(y => y.Path).ToList();
                 data.ClientId = x.ClientId;
                 var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
-                data.ClientName = client.Name;
-                data.ClientSurname = client.Surname;
+
                 var failureLogs = _failureLogRepo
                     .GetAll()
                     .Where(y => y.FailureId == data.FailureId)
@@ -163,26 +162,7 @@ namespace HelpDesk.Web.Controllers
                     .Select(x => _mapper.Map<FailureViewModel>(x))
                     .OrderBy(x => x.OperationTime)
                     .ToList();
-                //foreach (var model in data)
-                //{
-                //    var client = _membershipTools.UserManager.FindByIdAsync(model.ClientId).Result;
-                //    var op = _membershipTools.UserManager.FindByIdAsync(model.OperatorId).Result;
-                //    var tech = _membershipTools.UserManager.FindByIdAsync(model.TechnicianId).Result;
 
-                //    model.ClientName = client.Name;
-                //    model.ClientSurname = client.Surname;
-                //    if (model.Operator is null) model.Operator = "-";
-                //    else
-                //    {
-                //        model.Operator =  op.Name + " " + op.Surname;
-                //    }
-
-                //    if (model.Technician is null) model.Operator = "-";
-                //    else
-                //    {
-                //        model.Operator = tech.Name + " " + tech.Surname;
-                //    }
-                //}
                 return View(data);
             }
             catch (Exception ex)
@@ -224,7 +204,7 @@ namespace HelpDesk.Web.Controllers
                 });
 
                 var emailService = new EmailService();
-                var body = $"Merhaba <b>{failure.Client.Name} {failure.Client.Surname}</b><br>{failure.FailureName} adlı arızanız onaylanmış ve alanında uzman teknisyenlerimizden birine atanmıştır. Sizinle yeniden iletişime geçilecektir.<br><br>İyi günler dileriz.";
+                var body = $"Merhaba <b>{_membershipTools.GetNameSurname(model.ClientId).Result}</b><br>{failure.FailureName} adlı arızanız onaylanmış ve alanında uzman teknisyenlerimizden birine atanmıştır. Sizinle yeniden iletişime geçilecektir.<br><br>İyi günler dileriz.";
                 await emailService.SendAsync(new EmailModel()
                 {
                     Body = body,

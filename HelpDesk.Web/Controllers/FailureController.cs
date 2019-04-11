@@ -87,9 +87,7 @@ namespace HelpDesk.Web.Controllers
                 var data = _mapper.Map<FailureViewModel>(x);
                 data.PhotoPath = _photoRepo.GetAll(y => y.FailureId == id).Select(y => y.Path).ToList();
                 data.ClientId = x.ClientId;
-                var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
-                data.ClientName = client.Name;
-                data.ClientSurname = client.Surname;
+
                 var failureLogs = _failureLogRepo
                     .GetAll()
                     .Where(y => y.FailureId == data.FailureId)
@@ -170,7 +168,7 @@ namespace HelpDesk.Web.Controllers
                     FromWhom = IdentityRoles.Client
                 });
 
-                if (model.PostedFile != null || model.PostedFile.Count > 0)
+                if (model.PostedFile != null && model.PostedFile.Count > 0)
                 {
                     model.PostedFile.ForEach(async file =>
                     {
@@ -297,7 +295,7 @@ namespace HelpDesk.Web.Controllers
                 {
                     Text = $"Bir hata oluştu: {ex.Message}",
                     ActionName = "Survey",
-                    ControllerName = "Issue",
+                    ControllerName = "Failure",
                     ErrorCode = "500"
                 };
                 TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
@@ -308,10 +306,28 @@ namespace HelpDesk.Web.Controllers
         [Authorize(Roles = "Admin, Operator")]
         public ActionResult GetAllFailures()
         {
-            var data = _failureRepo.GetAll(x => x.FinishingTime != null);
-            if (data == null)
-                return RedirectToAction("Index", "Home");
-            return View(data);
+            try
+            {
+                var data = _failureRepo
+                        .GetAll()
+                        .Select(x => _mapper.Map<FailureViewModel>(x))
+                        .Where(x => x.FinishingTime != null)
+                        .OrderBy(x => x.OperationTime)
+                        .ToList();
+                return View(data);
+            }
+            catch (Exception ex)
+            {
+                var mdl = new ErrorViewModel()
+                {
+                    Text = $"Bir hata oluştu: {ex.Message}",
+                    ActionName = "GetAllFailures",
+                    ControllerName = "Failure",
+                    ErrorCode = "500"
+                };
+                TempData["ErrorMessage"] = JsonConvert.SerializeObject(mdl);
+                return RedirectToAction("Error", "Home");
+            }
         }
     }
 }

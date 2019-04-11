@@ -72,16 +72,14 @@ namespace HelpDesk.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Detail(int id)
+        public ActionResult Detail(int id)
         {
             try
             {
                 var x = _failureRepo.GetById(id);
                 var data = _mapper.Map<FailureViewModel>(x);
                 data.ClientId = x.ClientId;
-                var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
-                data.ClientName = client.Name;
-                data.ClientSurname = client.Surname;
+
                 data.PhotoPath = _photoRepo.GetAll(y => y.FailureId == id).Select(y => y.Path).ToList();
                 var failureLogs = _failureLogRepo
                     .GetAll()
@@ -253,7 +251,7 @@ namespace HelpDesk.Web.Controllers
                 string siteUrl = uri.Scheme + System.Uri.SchemeDelimiter + hostComponents;
 
                 EmailService emailService = new EmailService();
-                var body = $"Merhaba <b>{clientNameSurname}</b><br>{failure.Description} adlı arıza kaydınız kapanmıştır.<br>Değerlendirmeniz için aşağıda linki bulunan anketi doldurmanızı rica ederiz.<br> <a href='{siteUrl}/failure/survey?code={failure.SurveyId}' >Anket Linki </a> ";
+                var body = $"Merhaba <b>{clientNameSurname.Result}</b><br>{failure.Description} adlı arıza kaydınız kapanmıştır.<br>Değerlendirmeniz için aşağıda linki bulunan anketi doldurmanızı rica ederiz.<br> <a href='{siteUrl}/failure/survey?code={failure.SurveyId}' >Anket Linki </a> ";
                 emailService.Send(new EmailModel() { Body = body, Subject = "Değerlendirme Anketi" }, user.Email);
 
                 return RedirectToAction("Detail", "Technician", new

@@ -39,14 +39,14 @@
 
                                             <tr style="background: lightgrey">
                                                 <th>@(i + 1)</th>
-                                                <td>@current.Id</td>
+                                                <td>@current.FailureId</td>
                                                 <td>@current.Description</td>
                                                 <td>@current.RepairProcess</td>
-                                                <td style="text-align:justify">@(current.TechnicianId == null ? "Teknisyen Atanmadı" : _membershipTools.GetNameSurname(current.TechnicianId))</td>
+                                                <td style="text-align:justify">@(current.TechnicianId == null ? "Teknisyen Atanmadı" : _membershipTools.GetNameSurname(current.TechnicianId).Result)</td>
                                                 <td>@current.Address</td>
                                                 <td>@current.FinishingTime.ToLongDateString()</td>
                                                 <td>
-                                                    <a href="@Url.Action("Detail", "Failure",new {id=current.Id})" class="btn btn-success">Detay</a>
+                                                    <a href="@Url.Action("Detail", "Failure",new {id=current.FailureId})" class="btn btn-success">Detay</a>
                                                 </td>
                                             </tr>
                                         }

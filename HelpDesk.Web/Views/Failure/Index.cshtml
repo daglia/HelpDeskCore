@@ -56,7 +56,7 @@
                                     <td>@data.FailureName</td>
                                     <td>@data.ProductModel</td>
                                     <td>@HelpDesk.BLL.Helpers.EnumHelpers.GetDescription(data.OperationStatus)</td>
-                                    <td class="text-center">@(data.Technician)</td>
+                                    <td class="text-center">@(data.TechnicianId == null ? "-" : _membershipTools.GetNameSurname(data.TechnicianId).Result)</td>
                                     <td class="text-center">
                                         <a href="@Url.Action("Detail", "Failure", new {id = data.FailureId})" class="btn btn-success">
                                             Ayrıntılar

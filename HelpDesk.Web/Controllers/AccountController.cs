@@ -68,7 +68,7 @@ namespace HelpDesk.Web.Controllers
                     Surname = user.Surname,
                     UserName = user.UserName,
                     TechnicianStatus = user.TechnicianStatus,
-                    AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/img/avatars/avatar3.jpg" : user.AvatarPath,
+                    AvatarPath = string.IsNullOrEmpty(user.AvatarPath) ? "/assets/img/user.png" : user.AvatarPath,
                     Latitude = user.Latitude,
                     Longitude = user.Longitude
                 }
@@ -103,14 +103,13 @@ namespace HelpDesk.Web.Controllers
 
                 ApplicationUser newUser = new ApplicationUser()
                 {
-                    AvatarPath = null,
+                    AvatarPath = "/assets/img/user.png",
                     EmailConfirmed = false,
                     Name = model.Name,
                     PhoneNumber = model.Phone,
                     Surname = model.Surname,
                     Email = model.Email,
                     UserName = model.UserName,
-                    //Location = model.Location == Models.Enums.Locations.KonumYok ? Models.Enums.Locations.Beşiktaş : model.Location,
                 };
                 newUser.ActivationCode = StringHelpers.GetCode();
 

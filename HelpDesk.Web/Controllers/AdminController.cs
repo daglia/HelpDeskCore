@@ -8,6 +8,7 @@ using HelpDesk.BLL.Repository;
 using HelpDesk.BLL.Repository.Abstracts;
 using HelpDesk.DAL;
 using HelpDesk.Models.Entities;
+using HelpDesk.Models.Enums;
 using HelpDesk.Models.IdentityEntities;
 using HelpDesk.Models.Models;
 using HelpDesk.Models.ViewModels;
@@ -55,9 +56,7 @@ namespace HelpDesk.Web.Controllers
                     }
                 }
 
-
                 ViewBag.RoleList = roller;
-
 
                 var model = new UserProfileViewModel()
                 {
@@ -69,6 +68,18 @@ namespace HelpDesk.Web.Controllers
                     PhoneNumber = user.PhoneNumber,
                     UserName = user.UserName
                 };
+                if (await _membershipTools.UserManager.IsInRoleAsync(user, "Technician"))
+                {
+                    model.TechnicianStatus = TechnicianStatuses.Available;
+                    user.TechnicianStatus = TechnicianStatuses.Available;
+                    _dbContext.Update(user);
+                }
+                else
+                {
+                    model.TechnicianStatus = null;
+                    user.TechnicianStatus = null;
+                    _dbContext.Update(user);
+                }
                 return View(model);
             }
             catch (Exception ex)

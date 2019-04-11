@@ -1,6 +1,8 @@
-﻿using HelpDesk.Models.Enums;
+﻿using System.Collections.Generic;
+using HelpDesk.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using HelpDesk.Models.Entities;
 
 namespace HelpDesk.Models.IdentityEntities
