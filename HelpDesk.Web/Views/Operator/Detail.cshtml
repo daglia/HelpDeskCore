@@ -1,5 +1,7 @@
-﻿@using HelpDesk.Models.Enums
+﻿@using HelpDesk.BLL.Account
+@using HelpDesk.Models.Enums
 @using HelpDesk.Models.ViewModels
+@inject MembershipTools _membershipTools
 @model HelpDesk.Models.ViewModels.FailureViewModel
 @{
     ViewBag.Title = $"{Model.FailureName} arızasının ayrıntıları";
@@ -71,11 +73,11 @@
                                     </tr>
                                     <tr>
                                         <th>Adı</th>
-                                        <td>@Model.ClientName</td>
+                                        <td>@(Model.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Name)</td>
                                     </tr>
                                     <tr>
                                         <th>Soyadı</th>
-                                        <td>@Model.ClientSurname</td>
+                                        <td>@(Model.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Surname)</td>
                                     </tr>
                                     <tr>
                                         <th>Adresi</th>
@@ -83,7 +85,7 @@
                                     </tr>
                                     <tr>
                                         <th>Teknisyen</th>
-                                        <td>@Model.Technician</td>
+                                        <td>@(Model.TechnicianId != null ? "-" : _membershipTools.GetNameSurname(Model.TechnicianId).Result)</td>
                                     </tr>
                                     <tr>
                                         <th>Güncelleme</th>

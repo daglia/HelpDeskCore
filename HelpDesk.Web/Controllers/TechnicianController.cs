@@ -72,16 +72,14 @@ namespace HelpDesk.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> Detail(int id)
+        public ActionResult Detail(int id)
         {
             try
             {
                 var x = _failureRepo.GetById(id);
                 var data = _mapper.Map<FailureViewModel>(x);
                 data.ClientId = x.ClientId;
-                var client = await _membershipTools.UserManager.FindByIdAsync(data.ClientId);
-                data.ClientName = client.Name;
-                data.ClientSurname = client.Surname;
+
                 data.PhotoPath = _photoRepo.GetAll(y => y.FailureId == id).Select(y => y.Path).ToList();
                 var failureLogs = _failureLogRepo
                     .GetAll()

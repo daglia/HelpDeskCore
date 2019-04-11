@@ -1,4 +1,5 @@
 ﻿@using HelpDesk.BLL.Account
+@inject MembershipTools _membershipTools
 @model List<HelpDesk.Models.ViewModels.FailureViewModel>
 
     @{
@@ -51,11 +52,11 @@
                                     <tr>
                                         <td class="text-center">@(i + 1)</td>
                                         <td>@data.CreatedTime</td>
-                                        <td>@data.ClientName</td>
-                                        <td>@data.ClientSurname</td>
+                                        <td>@(data.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(data.ClientId).Result.Name)</td>
+                                        <td>@(data.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(data.ClientId).Result.Name)</td>
                                         <td>@HelpDesk.BLL.Helpers.EnumHelpers.GetDescription(data.OperationStatus)</td>
-                                        <td class="text-center">@(data.Operator)</td>
-                                        <td class="text-center">@(data.Technician)</td>
+                                        <td class="text-center">@(data.OperatorId != null ? "-" : _membershipTools.GetNameSurname(data.OperatorId).Result)</td>
+                                        <td class="text-center">@(data.TechnicianId != null ? "-" : _membershipTools.GetNameSurname(data.TechnicianId).Result)</td>
 
 
                                         <td class="text-center">

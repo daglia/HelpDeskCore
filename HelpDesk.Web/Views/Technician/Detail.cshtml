@@ -2,7 +2,7 @@
 @using HelpDesk.Models.Enums
 @using HelpDesk.Models.ViewModels
 @model HelpDesk.Models.ViewModels.FailureViewModel
-@inject MembershipTools MembershipTools
+@inject MembershipTools _membershipTools
 @{
     ViewBag.Title = $"{Model.FailureName} arızasının ayrıntıları";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -72,11 +72,11 @@
                                     </tr>
                                     <tr>
                                         <th>Adı</th>
-                                        <td>@Model.ClientName</td>
+                                        <td>@(Model.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Name)</td>
                                     </tr>
                                     <tr>
                                         <th>Soyadı</th>
-                                        <td>@Model.ClientSurname</td>
+                                        <td>@(Model.ClientId != null ? "-" : _membershipTools.UserManager.FindByIdAsync(Model.ClientId).Result.Surname)</td>
                                     </tr>
                                     <tr>
                                         <th>Adresi</th>
@@ -84,7 +84,7 @@
                                     </tr>
                                     <tr>
                                         <th>Teknisyen</th>
-                                        <td>@Model.Technician</td>
+                                        <td>@(Model.TechnicianId != null ? "-" : _membershipTools.GetNameSurname(Model.TechnicianId).Result)</td>
                                     </tr>
 
                                     <tr>
@@ -94,7 +94,7 @@
                                             {
                                                 <form asp-action="TechnicianStartWork" class="form-horizontal">
                                                     <input asp-for="FailureId" type="hidden"/>
-                                                    @switch (MembershipTools.GetTechnicianStatus(Model.TechnicianId).Result)
+                                                    @switch (_membershipTools.GetTechnicianStatus(Model.TechnicianId).Result)
                                                     {
                                                         case TechnicianStatuses.Available:
                                                         <button class="btn btn-warning" type="submit">Yola Çıktım</button>
