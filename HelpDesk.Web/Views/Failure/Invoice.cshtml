@@ -1,4 +1,6 @@
-﻿@model HelpDesk.Models.ViewModels.FailureViewModel
+﻿@using HelpDesk.BLL.Account
+@model HelpDesk.Models.ViewModels.FailureViewModel
+@inject MembershipTools _membershipTools
 @{
     ViewBag.Title = "Invoice";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -29,7 +31,8 @@
                                     <div class="col-xs-6">
                                         <address>
                                             <strong>Sayın:</strong><br />
-                                            @(Model.ClientName + " " + Model.ClientSurname)<br />
+                                            @_membershipTools.GetNameSurname(Model.ClientId).Result<br /><br />
+                                            <strong>Adres:</strong><br />
                                             @Model.Address
                                         </address>
                                     </div>

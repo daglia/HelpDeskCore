@@ -61,10 +61,6 @@ namespace HelpDesk.Models.ViewModels
         public string TechnicianId { get; set; }
         public string OperatorId { get; set; }
 
-        public string ClientName { get; set; }
-        public string ClientSurname { get; set; }
-        public string Technician { get; set; }
-        public string Operator { get; set; }
         public TechnicianStatuses TechnicianStatus { get; set; }
 
         public List<string> PhotoPath { get; set; }
