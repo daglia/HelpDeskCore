@@ -95,7 +95,7 @@
                                     </tr>
                                     <tr>
                                         <th>Teknisyenin durumu</th>
-                                        <td>@HelpDesk.BLL.Helpers.EnumHelpers.GetDescription(Model.TechnicianStatus)</td>
+                                        <td>@HelpDesk.BLL.Helpers.EnumHelpers.GetDescription(_membershipTools.UserManager.FindByIdAsync(Model.TechnicianId).Result.TechnicianStatus.Value)</td>
                                     </tr>
                                     @*<tr>
                                             <th>Reddet</th>

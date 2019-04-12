@@ -76,8 +76,45 @@
 
 @section bottom
     {
+    <script src="~/assets/js/jquery-2.1.1.min.js"></script>
+    <script src="~/assets/plugins/nanoscrollerjs/jquery.nanoscroller.min.js"></script>
+    <script src="~/assets/plugins/bootstrap-select/bootstrap-select.min.js"></script>
     <script src="~/assets/plugins/datatables/media/js/jquery.dataTables.js"></script>
     <script src="~/assets/plugins/datatables/media/js/dataTables.bootstrap.js"></script>
     <script src="~/assets/plugins/datatables/extensions/Responsive/js/dataTables.responsive.min.js"></script>
     <script src="~/assets/js/demo/tables-datatables.js"></script>
+    
+    <script>
+        $(document).ready(function () {
+            $('#demo-dt-basic').DataTable().destroy();
+
+            $('#demo-dt-basic').DataTable({
+                retrieve: true,
+                language: {
+                    "decimal": "",
+                    "emptyTable": "Tabloda henüz veri yok.",
+                    "info": "_TOTAL_ veri arasından _START_ - _END_ arasındakiler gösteriliyor.",
+                    "infoEmpty": "0 veri arasından 0 - 0 arasındakiler gösteriliyor.",
+                    "infoFiltered": "(Toplam _MAX_ veri.)",
+                    "infoPostFix": "",
+                    "thousands": ",",
+                    "lengthMenu": "Sayfa başına _MENU_ veri göster.",
+                    "loadingRecords": "Yükleniyor...",
+                    "processing": "İşleniyor...",
+                    "search": "Ara:",
+                    "zeroRecords": "Eşleşen veri bulunamadı.",
+                    "paginate": {
+                        "first": "İlk",
+                        "last": "Son",
+                        "next": "Sonraki",
+                        "previous": "Önceki"
+                    },
+                    "aria": {
+                        "sortAscending": ": artan şekilde sırala",
+                        "sortDescending": ": azalan şekilde sırala"
+                    }
+                }
+            });
+        });
+    </script>
 }
