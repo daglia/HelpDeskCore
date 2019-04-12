@@ -170,10 +170,10 @@ namespace HelpDesk.Web.Controllers
 
                 if (model.PostedFile != null && model.PostedFile.Count > 0)
                 {
-                    model.PostedFile.ForEach(async file =>
+                    foreach (var file in model.PostedFile)
                     {
                         if (file == null || file.Length <= 0)
-                            return;
+                            return null;
 
                         string fileName = "failure-" + Path.GetFileNameWithoutExtension(file.FileName);
                         string extName = Path.GetExtension(file.FileName);
@@ -200,7 +200,6 @@ namespace HelpDesk.Web.Controllers
                             Path = "/Uploads/Failure/" + fileName + extName
                         });
                     }
-                    );
                 }
                 await _dbContext.SaveChangesAsync();
                 var photos = _photoRepo.GetAll(x => x.FailureId == data.Id).ToList();

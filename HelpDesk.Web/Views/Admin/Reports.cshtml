@@ -1,7 +1,7 @@
 ﻿
 @using HelpDesk.BLL.Repository
 @using HelpDesk.Models.Entities
-@model List<HelpDesk.Models.Entities.Survey>
+@model List<HelpDesk.Models.ViewModels.SurveyViewModel>
 @inject HelpDesk.BLL.Repository.Abstracts.IRepository<Failure, int> _failureRepo
 @{
     ViewBag.Title = "Raporlar";
@@ -26,11 +26,11 @@
                 <tr></tr>
             </thead>
             <tbody>
-               @*@for (var i = 0; i < Model.Count; i++)
+               @for (var i = 0; i < Model.Count; i++)
                 {
 
                     var item = Model[i];
-                    var failure = _failureRepo.GetAll().FirstOrDefault(x => x.SurveyId == item.Id);
+                    var failure = _failureRepo.GetAll().FirstOrDefault(x => x.SurveyId == item.SurveyId);
                     <tr>
                         <th style="font-weight: bold">@(i + 1)</th>
                         <td>@(failure?.Id)</td>
@@ -43,7 +43,7 @@
                         <td>@(failure?.FinishingTime?.DayOfYear - failure?.CreatedDate.DayOfYear)</td>
                         <td><a href="@Url.Action("Detail", "Failure", new {id = failure.Id})" class="btn btn-success">Detay</a></td>
                     </tr>
-                }*@
+                }
             </tbody>
             <tfoot>
                 <tr>

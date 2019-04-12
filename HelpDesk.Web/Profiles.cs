@@ -41,6 +41,16 @@ namespace HelpDesk.Web
             }
         }
 
+        public class SurveyProfile : Profile
+        {
+            public SurveyProfile()
+            {
+                CreateMap<Survey, SurveyViewModel>()
+                    .ForMember(dest => dest.SurveyId, opt => opt.MapFrom(x => x.Id))
+                    .ReverseMap();
+            }
+        }
+
         //Çoğaltılabilir...
         //Controller'da kullanmak için IMapper ile DI yapılmalı.
     }
