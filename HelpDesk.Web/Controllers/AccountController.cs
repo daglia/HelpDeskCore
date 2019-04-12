@@ -426,13 +426,6 @@ namespace HelpDesk.Web.Controllers
 
                 string newPassword = StringHelpers.GetCode().Substring(0, 6);
 
-                //await _membershipTools.UserManager.RemovePasswordAsync(user);
-                //await _membershipTools.UserManager.AddPasswordAsync(user,
-                //    _membershipTools.UserManager.PasswordHasher.HashPassword(user, newPassword));
-
-                //var token = await _membershipTools.UserManager.GeneratePasswordResetTokenAsync(user);
-                //await _membershipTools.UserManager.ResetPasswordAsync(user, token, newPassword);
-
                 var hashPassword = _membershipTools.UserManager.PasswordHasher.HashPassword(user, newPassword);
 
                 await _membershipTools.UserStore.SetPasswordHashAsync(user, hashPassword);
