@@ -14,36 +14,37 @@
     <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 }
 
-<div class="table-responsive">
-    <div class="row">
-        <div class="col-md-6 col-md-offset-2">
-            <div id="chart_div"></div>
-        </div>
+
+<div class="row">
+    <div class="col-md-6 col-md-offset-2">
+        <div id="chart_div"></div>
     </div>
+</div>
+<div class="table-responsive">
     <div class="row">
         <table id="example2" class="display table table-striped" style="width: 100%; mso-cellspacing: 0;">
             <thead>
                 <tr></tr>
             </thead>
             <tbody>
-               @for (var i = 0; i < Model.Count; i++)
-                {
+                @*@for (var i = 0; i < Model.Count; i++)
+                    {
 
-                    var item = Model[i];
-                    var failure = _failureRepo.GetAll().FirstOrDefault(x => x.SurveyId == item.SurveyId);
-                    <tr>
-                        <th style="font-weight: bold">@(i + 1)</th>
-                        <td>@(failure?.Id)</td>
-                        <td>@(failure?.Description)</td>
-                        <td>@item.Satisfaction &#x2605;</td>
-                        <td>@item.TechPoint &#x2605;</td>
-                        <td>@item.Speed &#x2605;</td>
-                        <td>@item.Pricing &#x2605;</td>
-                        <td>@item.Solving &#x2605;</td>
-                        <td>@(failure?.FinishingTime?.DayOfYear - failure?.CreatedDate.DayOfYear)</td>
-                        <td><a href="@Url.Action("Detail", "Failure", new {id = failure.Id})" class="btn btn-success">Detay</a></td>
-                    </tr>
-                }
+                        var item = Model[i];
+                        var failure = _failureRepo.GetAll().FirstOrDefault(x => x.SurveyId == item.SurveyId);
+                        <tr>
+                            <th style="font-weight: bold">@(i + 1)</th>
+                            <td>@(failure?.Id)</td>
+                            <td>@(failure?.Description)</td>
+                            <td>@item.Satisfaction &#x2605;</td>
+                            <td>@item.TechPoint &#x2605;</td>
+                            <td>@item.Speed &#x2605;</td>
+                            <td>@item.Pricing &#x2605;</td>
+                            <td>@item.Solving &#x2605;</td>
+                            <td>@(failure?.FinishingTime?.DayOfYear - failure?.CreatedDate.DayOfYear)</td>
+                            <td><a href="@Url.Action("Detail", "Failure", new {id = failure.Id})" class="btn btn-success">Detay</a></td>
+                        </tr>
+                    }*@
             </tbody>
             <tfoot>
                 <tr>
@@ -66,7 +67,7 @@
 <hr />
 <br />
 
-@*<div class="row">
+<div class="row">
         <div class="col-md-4 col-md-offset-2">
             <div class="panel panel-white stats-widget">
                 <div class="panel-body">
@@ -106,6 +107,7 @@
         </div>
         <div class="box box-danger col-md-6">
             <div class="box-header with-border">
+                <p class="stats-info">Ortalama İş Bitirme Süreleri</p>
                 <div>
                     <div id="chart_div2"></div>
                 </div>
@@ -124,92 +126,52 @@
             <!-- /.box-body -->
         </div>
     </div>
-    <hr />*@
+    <hr />
 
 
 
-@section bottom
+@section Scripts
     {
 
-    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
     <script>
-        $(function () {
-            google.charts.load("current", { packages: ['corechart'] });
-            google.charts.setOnLoadCallback(drawChart);
-            function drawChart() {
+        $(function() {
+            google.charts.load('current', { 'packages': ['corechart'] });
+
+
+            google.charts.setOnLoadCallback(drawChartSurvey);
+
+            function drawChartSurvey() {
+                console.log("getir");
                 $.ajax({
-                    url: "@Url.Action("Rapor1","Admin")",
+                    url: "@Url.Action("Rapor1", "Admin")",
                     method: "get",
-                    dataType: "json",
+                    type: "json"
                 }).done(function (e) {
                     var data = new google.visualization.DataTable();
                     data.addColumn('string', 'Anket Soruları');
                     data.addColumn('number', 'Puan');
-                    $.each(e.data, function (key, value) {
-                        data.addRow([value.Soru, value.Deger]);
-                    });
+                    $.each(e.data,
+                        function (key, value) {
+                            data.addRow([value.question, value.point]);
+                        });
                     var view = new google.visualization.DataView(data);
-                    var options = { // View ın ayarları
-                        title: "Genel Memnuniyet Grafiği",
-                        width: 700,
-                        height: 400,
+                    var options = {
+                        title: "Anket Ortalamaları",
+                        width: 540,
+                        height: 500,
                         bar: { groupWidth: "50%" },
-                        legend: { position:"none"}
-
+                        legend: { position: "none" }
                     };
-                    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));// bu id deki div in içerisine
-                    chart.draw(view, options); // tanımlanan view ı belirlenen ayarlarda göster
+                    var chart = new google.visualization.ColumnChart(document.getElementById("chart_div"));
+                    chart.draw(view, options);
                 });
             }
 
-            @*google.charts.load('current', { 'packages': ['timeline'] });
-            google.charts.setOnLoadCallback(drawChart1);
-            function drawChart1() {
-                $.ajax({
-                    url: "@Url.Action("Rapor2","Admin")",
-                    method: "get",
-                    dataType: "json"
-                }).done(function (e) {
-                    console.log(e);
-                    var container = document.getElementById('timeline');
-                    var chart = new google.visualization.Timeline(container);
-                    var dataTable = new google.visualization.DataTable();
 
-                    dataTable.addColumn({ type: 'string', id: 'Sıra' });
-                    dataTable.addColumn({ type: 'string', id: 'Teknisyen' });
-                    dataTable.addColumn({ type: 'date', id: 'Başlangıç' });
-                    dataTable.addColumn({ type: 'date', id: 'Bitiş' });
-                    $.each(e.data, function (key, value) {
-                        console.log(key);
-                        var arizaTarihiB = new Date(value.ArizaBaslangicTarihiS);
-                        var gun = arizaTarihiB.getDate();
-                        var ay = (arizaTarihiB.getMonth() + 1);
-                        var yil = arizaTarihiB.getFullYear();
-                        var saat = arizaTarihiB.getHours();
-                        var dakika = arizaTarihiB.getMinutes();
-                        var saniye = arizaTarihiB.getSeconds();
-
-                        var arizaTarihiBts = new Date(value.ArizaBitisTarihiS);
-                        var gunBts = arizaTarihiBts.getDate();
-                        var ayBts = (arizaTarihiBts.getMonth() + 1);
-                        var yilBts = arizaTarihiBts.getFullYear();
-                        var saatBts = arizaTarihiBts.getHours();
-                        var dakikaBts = arizaTarihiBts.getMinutes();
-                        var saniyeBts = arizaTarihiBts.getSeconds();
-
-                        dataTable.addRows([
-                            [(key+1)+"",value.TeknisyenAdi, new Date(yil, ay, gun, saat, dakika, saniye), new Date(yilBts, ayBts, gunBts, saatBts, dakikaBts, saniyeBts)],
-                            ]);
-                    });
-
-
-                    chart.draw(dataTable);
-                    });
-
-            }
+           
 
              google.charts.load("current", { packages: ['corechart'] });
-            google.charts.setOnLoadCallback(drawChart2);
+             google.charts.setOnLoadCallback(drawChart2);
             function drawChart2() {
                 $.ajax({
                     url: "@Url.Action("Rapor4","Admin")",
@@ -234,7 +196,7 @@
                     var chart = new google.visualization.ColumnChart(document.getElementById("chart_div2"));// bu id deki div in içerisine
                     chart.draw(view, options); // tanımlanan view ı belirlenen ayarlarda göster
                 });
-            };*@
+            };
         })
     </script>
 }

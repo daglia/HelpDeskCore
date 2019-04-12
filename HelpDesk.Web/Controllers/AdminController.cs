@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using HelpDesk.BLL.Account;
 using HelpDesk.BLL.Repository;
@@ -9,12 +8,11 @@ using HelpDesk.BLL.Repository.Abstracts;
 using HelpDesk.DAL;
 using HelpDesk.Models.Entities;
 using HelpDesk.Models.Enums;
-using HelpDesk.Models.IdentityEntities;
 using HelpDesk.Models.Models;
 using HelpDesk.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 
 namespace HelpDesk.Web.Controllers
@@ -24,10 +22,10 @@ namespace HelpDesk.Web.Controllers
     {
         private readonly MembershipTools _membershipTools;
         private readonly MyContext _dbContext;
-        private readonly IRepository<Failure,int> _failureRepo;
+        private readonly IRepository<Failure, int> _failureRepo;
         private readonly IRepository<Survey, string> _surveyRepo;
 
-        public AdminController(MembershipTools membershipTools, MyContext dbContext, IRepository<Failure,int> failureRepo, IRepository<Survey, string> surveyRepo) :base(membershipTools)
+        public AdminController(MembershipTools membershipTools, MyContext dbContext, IRepository<Failure, int> failureRepo, IRepository<Survey, string> surveyRepo) : base(membershipTools)
         {
             _membershipTools = membershipTools;
             _dbContext = dbContext;
@@ -35,14 +33,14 @@ namespace HelpDesk.Web.Controllers
             _surveyRepo = surveyRepo;
         }
 
-       
+
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
             try
             {
                 var user = await _membershipTools.UserManager.FindByIdAsync(id);
-               
+
                 if (user == null)
                     return RedirectToAction("EditUser");
 
@@ -126,7 +124,7 @@ namespace HelpDesk.Web.Controllers
                 await userManager.AddToRoleAsync(user, seciliRoller[i]);
             }
 
-            return RedirectToAction("EditUser", new {id = userId});
+            return RedirectToAction("EditUser", new { id = userId });
         }
 
         [HttpGet]
@@ -151,7 +149,7 @@ namespace HelpDesk.Web.Controllers
             var question3 = surveyRepo.GetAll().Select(x => x.Speed).Sum() / surveyRepo.GetAll().Select(x => x.Speed).Count();
             var question4 = surveyRepo.GetAll().Select(x => x.Pricing).Sum() / surveyRepo.GetAll().Select(x => x.Pricing).Count();
             var question5 = surveyRepo.GetAll().Select(x => x.Solving).Sum() / surveyRepo.GetAll().Select(x => x.Solving).Count();
-     
+
 
 
             var data = new List<ReportData>();
@@ -189,9 +187,9 @@ namespace HelpDesk.Web.Controllers
             });
         }
         [HttpGet]
-        public async Task<JsonResult>  Rapor2()
+        public async Task<JsonResult> Rapor2()
         {
-            var user =_membershipTools.UserManager.Users.ToList();
+            var user = _membershipTools.UserManager.Users.ToList();
             var arizaRepo = _failureRepo;
             var sonArizalar = new List<FailureViewModel>();
             foreach (var item in user)
@@ -222,7 +220,7 @@ namespace HelpDesk.Web.Controllers
 
         public JsonResult Rapor3()
         {
-            var arizaRepo =_failureRepo;
+            var arizaRepo = _failureRepo;
             var arizalar = arizaRepo.GetAll(x => x.RepairProcess != null);
             var toplamS = new TimeSpan();
             foreach (var ariza in arizalar)
@@ -237,10 +235,12 @@ namespace HelpDesk.Web.Controllers
         }
 
         [HttpGet]
-        public JsonResult Rapor4()
+        public async Task<JsonResult> Rapor4()
         {
+
+
             var arizaRepo = _failureRepo.GetAll();
-            var userRepo =_membershipTools.UserManager.Users.ToList();
+            var userRepo = _membershipTools.UserManager.Users.ToList();
             var anketRepo = _surveyRepo.GetAll();
 
             var teknisyenSorgu = from ariza in arizaRepo
@@ -249,22 +249,22 @@ namespace HelpDesk.Web.Controllers
                                  where teknisyen.Id == ariza.TechnicianId & anket.Id == ariza.SurveyId
                                  group new
                                  {
-                                     ariza,
-                                     teknisyen
+                                     teknisyen,
+                                     ariza
                                  }
                                  by new
                                  {
-                                     teknisyen.Name,
-                                     teknisyen.Surname
+                                     teknisyen,
+                                     ariza
                                  }
                                into gp
                                  select new
                                  {
-                                     isim = gp.Key.Name + " " + gp.Key.Surname,
+                                     isim = gp.Key.teknisyen.Name + " " + gp.Key.teknisyen.Surname,
                                      toplam = gp.Average(x => x.ariza.Survey.Solving)
                                  };
 
-            var data = teknisyenSorgu.ToList();
+            var data = await teknisyenSorgu.ToListAsync();
 
             return Json(new ResponseData()
             {
