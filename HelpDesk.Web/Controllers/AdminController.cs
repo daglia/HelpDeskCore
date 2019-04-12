@@ -4,8 +4,10 @@ using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using HelpDesk.BLL.Account;
+using HelpDesk.BLL.Helpers;
 using HelpDesk.BLL.Repository;
 using HelpDesk.BLL.Repository.Abstracts;
+using HelpDesk.BLL.Services.Senders;
 using HelpDesk.DAL;
 using HelpDesk.Models.Entities;
 using HelpDesk.Models.Enums;
@@ -272,6 +274,94 @@ namespace HelpDesk.Web.Controllers
                 success = true,
                 data = data
             });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SendCode(string id)
+        {
+            try
+            {
+                var user = await _membershipTools.UserStore.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return Json(new ResponseData
+                    {
+                        message = "Kullanıcı bulunamadı",
+                        success = false
+                    });
+                }
+
+                user.ActivationCode = StringHelpers.GetCode();
+                await _membershipTools.UserStore.UpdateAsync(user);
+                _membershipTools.UserStore.Context.SaveChanges();
+
+                var uri = new UriBuilder()
+                {
+                    Scheme = Uri.UriSchemeHttps
+                };
+                var hostComponents = Request.Host.ToUriComponent();
+                string SiteUrl = uri.Scheme + System.Uri.SchemeDelimiter + hostComponents;
+
+                EmailService emailService = new EmailService();
+                string body = $"Merhaba <b>{user.Name} {user.Surname}</b><br>Hesabınızı aktif etmek için aşağıdaki linke tıklayınız<br> <a href='{SiteUrl}/account/activation?code={user.ActivationCode}' >Aktivasyon Linki </a> ";
+                await emailService.SendAsync(new HelpDesk.Models.Models.EmailModel() { Body = body, Subject = "Üyelik Aktivasyonu" }, user.Email);
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseData()
+                {
+                    message = $"Bir hata oluştu: {ex.Message}",
+                    success = false
+                });
+            }
+            return Json(new ResponseData()
+            {
+                message = "Şifre sıfırlama maili gönderilmiştir",
+                success = true
+            });
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> SendPassword(string id)
+        {
+            try
+            {
+                var user = await _membershipTools.UserStore.FindByIdAsync(id);
+                if (user == null)
+                {
+                    return Json(new ResponseData()
+                    {
+                        message = "Kullanıcı bulunamadı",
+                        success = false
+                    });
+                }
+
+                string newPassword = StringHelpers.GetCode().Substring(0, 6);
+
+                var hashPassword = _membershipTools.UserManager.PasswordHasher.HashPassword(user, newPassword);
+
+                await _membershipTools.UserStore.SetPasswordHashAsync(user, hashPassword);
+
+                await _membershipTools.UserStore.Context.SaveChangesAsync();
+
+                EmailService emailService = new EmailService();
+                string body = $"Merhaba <b>{user.Name} {user.Surname}</b><br>Hesabınızın parolası sıfırlanmıştır<br> Yeni parolanız: <b>{newPassword}</b> <p>Yukarıdaki parolayı kullanarak sitemize giriş yapabilirsiniz.</p>";
+                emailService.Send(new HelpDesk.Models.Models.EmailModel() { Body = body, Subject = $"{user.UserName} Şifre Kurtarma" }, user.Email);
+
+                return Json(new ResponseData()
+                {
+                    message = "Şifre sıfırlama maili gönderilmiştir",
+                    success = true
+                });
+            }
+            catch (Exception ex)
+            {
+                return Json(new ResponseData()
+                {
+                    message = $"Bir hata oluştu: {ex.Message}",
+                    success = false
+                });
+            }
         }
     }
 }

@@ -6,12 +6,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@section top
-    {
-    <link rel="stylesheet" href="~/assets/plugins/select2/select2.min.css" />
-    <link rel="stylesheet" href="~/assets/plugins/select2/select2-bootstrap.css" />
-}
-
 <div id="container" class="effect mainnav-sm navbar-fixed mainnav-fixed">
     <div class="boxed">
         <!--CONTENT CONTAINER-->
@@ -24,7 +18,7 @@
         <div id="page-content" class="col-lg-6 col-lg-offset-3">
             <br /><br /><br /><br />
             <h3>@TempData["Message"]</h3>
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div asp-validation-summary="All" class="text-danger"></div>
 
             <form asp-action="EditUser" class="fieldset" enctype="multipart/form-data">
                 <input asp-for="Id" type="hidden" />
@@ -67,7 +61,7 @@
 
                 <div class="form-group row">
                     <div class="col-sm-9 control-label">
-                       <input asp-for="Id"/>
+                       <input asp-for="Id" type="hidden"/>
                        <div class="col-md-12">
                            @Html.DropDownList("Roles", (List<SelectListItem>)ViewBag.RoleList, new { @class = "btn dropdown-toggle btn-default btn-block" })
                        </div>
@@ -77,10 +71,7 @@
                         <input type="submit" value="Rol Güncelle" class="btn btn-primary" />
                     </div>
                 </div>
-
             </form>
-
-           
         </div>
         <!--===================================================-->
         <!--END CONTENT CONTAINER-->
@@ -90,15 +81,4 @@
     <!--===================================================-->
     <button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>
     <!--===================================================-->
-
-    @section bottom
-        {
-        <script src="~/assets/plugins/select2/select2.full.min.js"></script>
-        <script src="~/assets/plugins/bootstrap-notify/bootstrap-notify.min.js"></script>
-
-        <script>
-            $(function () {
-                App.initHelpers(['select2']);
-            });
-        </script>
-    }
+</div>
