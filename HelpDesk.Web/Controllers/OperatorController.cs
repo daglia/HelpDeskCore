@@ -204,7 +204,7 @@ namespace HelpDesk.Web.Controllers
                 });
 
                 var emailService = new EmailService();
-                var body = $"Merhaba <b>{_membershipTools.GetNameSurname(model.ClientId).Result}</b><br>{failure.FailureName} adlı arızanız onaylanmış ve alanında uzman teknisyenlerimizden birine atanmıştır. Sizinle yeniden iletişime geçilecektir.<br><br>İyi günler dileriz.";
+                var body = $"Merhaba <b>{_membershipTools.GetNameSurname(failure.ClientId).Result}</b><br>{failure.FailureName} adlı arızanız onaylanmış ve alanında uzman teknisyenlerimizden birine atanmıştır. Sizinle yeniden iletişime geçilecektir.<br><br>İyi günler dileriz.";
                 await emailService.SendAsync(new EmailModel()
                 {
                     Body = body,
