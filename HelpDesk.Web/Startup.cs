@@ -47,7 +47,7 @@ namespace HelpDesk.Web
 
             services.AddDbContext<MyContext>(options =>
                 options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                    Configuration.GetConnectionString("DefaultConnection")), ServiceLifetime.Transient);
 
             services.AddIdentity<ApplicationUser, ApplicationRole>()
              .AddDefaultTokenProviders()

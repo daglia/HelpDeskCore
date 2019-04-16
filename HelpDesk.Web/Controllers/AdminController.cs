@@ -15,6 +15,7 @@ using HelpDesk.Models.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ValueGeneration;
 using Newtonsoft.Json;
 
 namespace HelpDesk.Web.Controllers
@@ -237,36 +238,45 @@ namespace HelpDesk.Web.Controllers
         }
 
         [HttpGet]
-        public async Task<JsonResult> Rapor4()
+        public JsonResult Rapor4()
         {
+            var technicianUsers = _membershipTools.UserManager.GetUsersInRoleAsync("Technician").Result.ToList();
+            var failures = _failureRepo.GetAll();
+            var surveys = _surveyRepo.GetAll();
+            
+            
+            var teknisyenSorgu = failures
+                .Join(technicianUsers, x => x.TechnicianId, tech => tech.Id, (x, tech) => new {x, tech})
+                .Join(surveys, gg => gg.x.SurveyId, sur => sur.Id, (gg, sur) => new {gg, sur})
+                .GroupBy(z => new {z.gg.x, z.gg.tech})
+                .Select(t => new
+                {
+                    isim = t.Key.tech.Name + " " + t.Key.tech.Surname,
+                    toplam = t.Average(k => k.gg.x.Survey.Solving)
+                });
 
+            //var teknisyenSorgu = from ariza in _failureRepo.GetAll()
+            //                     join teknisyen in technicianUsers on ariza.TechnicianId equals teknisyen.Id
+            //                     join anket in surveys on ariza.SurveyId equals anket.Id
+            //                     where teknisyen.Id == ariza.TechnicianId && anket.Id == ariza.SurveyId
+            //                     group new
+            //                     {
+            //                         teknisyen,
+            //                         ariza
+            //                     }
+            //                     by new
+            //                     {
+            //                         teknisyen,
+            //                         ariza
+            //                     }
+            //                   into gp
+            //                     select new
+            //                     {
+            //                         isim = gp.Key.teknisyen.Name + " " + gp.Key.teknisyen.Surname,
+            //                         toplam = gp.Average(x => x.ariza.Survey.Solving)
+            //                     };
 
-            var arizaRepo = _failureRepo.GetAll();
-            var userRepo = _membershipTools.UserManager.Users.ToList();
-            var anketRepo = _surveyRepo.GetAll();
-
-            var teknisyenSorgu = from ariza in arizaRepo
-                                 join teknisyen in userRepo on ariza.TechnicianId equals teknisyen.Id
-                                 join anket in anketRepo on ariza.SurveyId equals anket.Id
-                                 where teknisyen.Id == ariza.TechnicianId & anket.Id == ariza.SurveyId
-                                 group new
-                                 {
-                                     teknisyen,
-                                     ariza
-                                 }
-                                 by new
-                                 {
-                                     teknisyen,
-                                     ariza
-                                 }
-                               into gp
-                                 select new
-                                 {
-                                     isim = gp.Key.teknisyen.Name + " " + gp.Key.teknisyen.Surname,
-                                     toplam = gp.Average(x => x.ariza.Survey.Solving)
-                                 };
-
-            var data = await teknisyenSorgu.ToListAsync();
+            var data = teknisyenSorgu.ToList();
 
             return Json(new ResponseData()
             {
